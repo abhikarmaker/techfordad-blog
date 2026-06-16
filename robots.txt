@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://techfordad.com/sitemap.xml
+Sitemap: https://www.techfordad.com/sitemap.xml
