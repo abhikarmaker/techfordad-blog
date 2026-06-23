@@ -8,18 +8,13 @@ document.querySelectorAll('.faq-q').forEach(q => {
   });
 });
 
-// Email form
-document.querySelectorAll('.email-form button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const input = btn.previousElementSibling;
-    if (input && input.value.includes('@')) {
-      btn.textContent = '✓ You\'re in!';
+// Email form — Mailchimp handles validation/submission; just give visual feedback on submit
+document.querySelectorAll('.email-form').forEach(form => {
+  form.addEventListener('submit', () => {
+    const btn = form.querySelector('button[type="submit"]');
+    if (btn) {
+      btn.textContent = '✓ Submitting…';
       btn.style.background = '#16A34A';
-      input.value = '';
-      input.placeholder = 'Check your inbox!';
-    } else {
-      input.style.borderColor = '#DC2626';
-      input.placeholder = 'Please enter a valid email';
     }
   });
 });
