@@ -1,0 +1,4 @@
+Contact: https://www.techfordad.com/contact.html
+Expires: 2027-06-23T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://www.techfordad.com/.well-known/security.txt
