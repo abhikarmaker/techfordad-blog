@@ -4,131 +4,179 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>TechForDad Admin</title>
-  <meta name="robots" content="noindex, nofollow"/>
+  <meta name="robots" content="noindex,nofollow"/>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#0f172a;min-height:100vh}
-
-    /* ── Login ── */
-    #login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
-    .login-card{background:#fff;border-radius:16px;padding:48px 40px;width:100%;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.12);text-align:center}
-    .login-logo{font-size:36px;margin-bottom:12px}
-    .login-card h1{font-size:20px;font-weight:800;color:#0f172a;margin-bottom:6px}
-    .login-card p{font-size:14px;color:#64748b;margin-bottom:28px}
-    .login-card input{width:100%;padding:12px 16px;border:2px solid #e2e8f0;border-radius:10px;font-size:16px;outline:none;transition:border-color .2s;margin-bottom:12px}
-    .login-card input:focus{border-color:#4f46e5}
-    .login-card button{width:100%;padding:13px;background:#1B3A6B;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:background .2s}
-    .login-card button:hover{background:#162f58}
-    .login-error{color:#dc2626;font-size:13px;margin-top:10px;display:none}
-
-    /* ── Dashboard ── */
-    #dashboard{display:none}
-    header{background:#0f172a;color:#fff;padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
-    .h-left{display:flex;align-items:center;gap:12px}
-    .h-logo{font-size:17px;font-weight:800}
-    .h-badge{background:#dc2626;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.05em}
-    .h-right{display:flex;align-items:center;gap:16px}
-    .h-right a{color:#94a3b8;font-size:13px;text-decoration:none;transition:color .15s}
-    .h-right a:hover{color:#fff}
-    #logout-btn{background:none;border:1px solid #334155;color:#94a3b8;padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;transition:all .15s}
-    #logout-btn:hover{background:#334155;color:#fff}
-
-    .container{max-width:1120px;margin:28px auto;padding:0 24px}
-
-    /* stats */
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
-    .stat{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px}
-    .stat .num{font-size:30px;font-weight:800;color:#0f172a;line-height:1}
-    .stat .lbl{font-size:12px;color:#64748b;margin-top:6px;font-weight:500;text-transform:uppercase;letter-spacing:.05em}
-
-    /* quick links */
-    .quick-links{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px}
-    .ql{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:9px 16px;text-decoration:none;color:#374151;font-size:13px;font-weight:600;transition:all .15s}
-    .ql:hover{border-color:#4f46e5;color:#4f46e5;box-shadow:0 2px 8px rgba(79,70,229,.1)}
-
-    /* automations */
-    .auto-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
-    .auto-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px}
-    .auto-card h3{font-size:14px;font-weight:700;margin-bottom:12px;color:#0f172a}
-    .auto-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:6px 0;border-bottom:1px solid #f1f5f9}
-    .auto-row:last-child{border:none}
-    .auto-row .lbl{color:#64748b}
-    .auto-row .val{font-weight:600;color:#0f172a}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#0f172a;min-height:100vh;font-size:14px}
+    /* ── helpers ── */
+    .hide{display:none!important}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+    .btn-primary{background:#1B3A6B;color:#fff}.btn-primary:hover{background:#162f58}
+    .btn-danger{background:#dc2626;color:#fff}.btn-danger:hover{background:#b91c1c}
+    .btn-ghost{background:#f1f5f9;color:#374151;border:1px solid #e2e8f0}.btn-ghost:hover{background:#e2e8f0}
+    .btn-green{background:#16a34a;color:#fff}.btn-green:hover{background:#15803d}
+    .btn-amber{background:#d97706;color:#fff}.btn-amber:hover{background:#b45309}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+    .tag-blog{background:#ede9fe;color:#5b21b6}.tag-guide{background:#e0f2fe;color:#075985}
     .badge-on{background:#dcfce7;color:#166534;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:700}
-    .badge-sat{background:#fef9c3;color:#854d0e;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:700}
-
-    /* articles table */
-    .card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden}
-    .card-head{padding:14px 20px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center}
-    .card-head h2{font-size:15px;font-weight:700}
-    .card-head span{font-size:13px;color:#64748b}
+    .toast{position:fixed;bottom:24px;right:24px;background:#0f172a;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:999;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none}
+    .toast.show{opacity:1;transform:translateY(0)}
+    .toast.err{background:#dc2626}
+    /* ── login / setup ── */
+    .center-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+    .auth-card{background:#fff;border-radius:16px;padding:48px 40px;width:100%;max-width:400px;box-shadow:0 8px 32px rgba(0,0,0,.12);text-align:center}
+    .auth-card .logo{font-size:40px;margin-bottom:12px}
+    .auth-card h1{font-size:20px;font-weight:800;margin-bottom:6px}
+    .auth-card p{font-size:13px;color:#64748b;margin-bottom:28px;line-height:1.5}
+    .auth-card input{width:100%;padding:12px 16px;border:2px solid #e2e8f0;border-radius:10px;font-size:15px;outline:none;transition:border-color .2s;margin-bottom:10px;font-family:monospace}
+    .auth-card input:focus{border-color:#1B3A6B}
+    .auth-card label{display:block;text-align:left;font-size:12px;font-weight:600;color:#64748b;margin-bottom:4px}
+    .auth-err{color:#dc2626;font-size:13px;margin-top:8px}
+    /* ── shell ── */
+    #app{display:none;min-height:100vh;flex-direction:column}
+    .topbar{background:#0f172a;color:#fff;height:56px;display:flex;align-items:center;padding:0 24px;gap:16px;position:sticky;top:0;z-index:100}
+    .topbar-logo{font-size:16px;font-weight:800;margin-right:8px}
+    .tabs{display:flex;gap:2px;flex:1}
+    .tab{padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:#94a3b8;transition:all .15s;border:none;background:none}
+    .tab:hover{color:#fff;background:#1e293b}
+    .tab.active{color:#fff;background:#1e293b}
+    .topbar-right{display:flex;align-items:center;gap:10px;margin-left:auto}
+    .topbar-right a{color:#94a3b8;font-size:13px;text-decoration:none}.topbar-right a:hover{color:#fff}
+    .page{display:none;flex:1;padding:24px;max-width:1160px;margin:0 auto;width:100%}
+    .page.active{display:block}
+    /* ── cards / grids ── */
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+    .stat-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px}
+    .stat-num{font-size:28px;font-weight:800;line-height:1}
+    .stat-lbl{font-size:11px;color:#64748b;margin-top:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+    .panel{background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;margin-bottom:20px}
+    .panel-head{padding:14px 18px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .panel-head h2{font-size:14px;font-weight:700}
+    .panel-body{padding:18px}
+    .qlinks{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+    .ql{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:8px 14px;text-decoration:none;color:#374151;font-size:12px;font-weight:600;transition:all .15s}
+    .ql:hover{border-color:#1B3A6B;color:#1B3A6B}
+    /* ── tables ── */
     table{width:100%;border-collapse:collapse}
-    th{text-align:left;padding:10px 16px;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #f1f5f9;background:#f8fafc}
-    td{padding:13px 16px;border-bottom:1px solid #f8fafc;font-size:13px;vertical-align:middle}
+    th{text-align:left;padding:9px 14px;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #f1f5f9;background:#f8fafc}
+    td{padding:11px 14px;border-bottom:1px solid #f8fafc;vertical-align:middle}
     tr:last-child td{border:none}
     tr:hover td{background:#fafbff}
-    .art-title{font-weight:600;color:#0f172a;margin-bottom:3px}
-    .art-desc{font-size:12px;color:#94a3b8;line-height:1.4}
-    .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
-    .tag-blog{background:#ede9fe;color:#5b21b6}
-    .tag-guide{background:#e0f2fe;color:#075985}
-    .act{display:flex;gap:10px}
-    .act a{font-size:12px;font-weight:600;text-decoration:none;padding:4px 10px;border-radius:6px;transition:background .15s}
-    .act a.live{background:#f1f5f9;color:#374151}
-    .act a.live:hover{background:#e2e8f0}
-    .act a.gh{background:#f1f5f9;color:#374151}
-    .act a.gh:hover{background:#e2e8f0}
-
-    .loading{padding:40px;text-align:center;color:#94a3b8;font-size:14px}
-    footer{text-align:center;color:#94a3b8;font-size:12px;margin:24px 0 40px}
-
+    /* ── price editor ── */
+    .price-group{margin-bottom:24px}
+    .price-group h3{font-size:13px;font-weight:700;color:#1B3A6B;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e2e8f0}
+    .price-row{display:grid;grid-template-columns:1fr 140px 140px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid #f8fafc}
+    .price-row:last-child{border:none}
+    .price-name{font-size:13px;font-weight:500;color:#374151}
+    .price-input{padding:7px 12px;border:2px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:monospace;outline:none;transition:border-color .2s;width:100%}
+    .price-input:focus{border-color:#1B3A6B}
+    .price-input.changed{border-color:#d97706;background:#fffbeb}
+    .price-check-link{font-size:12px;color:#4f46e5;text-decoration:none;font-weight:600}
+    .price-check-link:hover{text-decoration:underline}
+    /* ── article editor ── */
+    .article-list-item{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #f8fafc;gap:10px}
+    .article-list-item:last-child{border:none}
+    .article-list-item:hover{background:#fafbff}
+    .art-info h4{font-size:13px;font-weight:600;color:#0f172a;margin-bottom:2px}
+    .art-info p{font-size:12px;color:#94a3b8}
+    .art-actions{display:flex;gap:8px;flex-shrink:0}
+    #editor-panel{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:24px}
+    #editor-panel.open{display:flex}
+    .editor-modal{background:#fff;border-radius:14px;width:100%;max-width:900px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
+    .editor-header{padding:16px 20px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between}
+    .editor-header h3{font-size:15px;font-weight:700}
+    .editor-tabs{display:flex;gap:4px;padding:10px 20px;border-bottom:1px solid #f1f5f9;background:#f8fafc}
+    .etab{padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;color:#64748b;background:none;border:none}
+    .etab.active{background:#1B3A6B;color:#fff}
+    .editor-body{flex:1;overflow:auto;padding:16px 20px}
+    textarea.code-editor{width:100%;height:400px;font-family:monospace;font-size:12px;line-height:1.5;border:2px solid #e2e8f0;border-radius:8px;padding:12px;outline:none;resize:vertical;transition:border-color .2s}
+    textarea.code-editor:focus{border-color:#1B3A6B}
+    .meta-field{margin-bottom:14px}
+    .meta-field label{display:block;font-size:12px;font-weight:600;color:#64748b;margin-bottom:4px}
+    .meta-field input,.meta-field textarea{width:100%;padding:9px 12px;border:2px solid #e2e8f0;border-radius:8px;font-size:13px;outline:none;transition:border-color .2s}
+    .meta-field textarea{height:80px;resize:vertical;font-family:inherit}
+    .meta-field input:focus,.meta-field textarea:focus{border-color:#1B3A6B}
+    .editor-footer{padding:14px 20px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .commit-msg-input{flex:1;padding:8px 12px;border:2px solid #e2e8f0;border-radius:8px;font-size:13px;outline:none}
+    .commit-msg-input:focus{border-color:#1B3A6B}
+    /* ── actions ── */
+    .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .action-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px}
+    .action-card h3{font-size:14px;font-weight:700;margin-bottom:6px}
+    .action-card p{font-size:12px;color:#64748b;margin-bottom:16px;line-height:1.5}
+    .commit-item{padding:10px 0;border-bottom:1px solid #f8fafc;font-size:12px}
+    .commit-item:last-child{border:none}
+    .commit-sha{font-family:monospace;color:#4f46e5;font-size:11px}
+    .commit-msg{font-weight:600;color:#0f172a;margin:2px 0}
+    .commit-meta{color:#94a3b8}
+    .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loading-text{color:#94a3b8;font-size:13px;padding:24px;text-align:center}
     @media(max-width:700px){
       .stats{grid-template-columns:1fr 1fr}
-      .auto-grid{grid-template-columns:1fr}
-      .card-head,.act{flex-direction:column;gap:6px}
-      th:nth-child(3),td:nth-child(3),th:nth-child(4),td:nth-child(4){display:none}
+      .action-grid{grid-template-columns:1fr}
+      .price-row{grid-template-columns:1fr 110px}
+      .tabs{display:none}
     }
   </style>
 </head>
 <body>
 
-<!-- ── LOGIN SCREEN ── -->
-<div id="login">
-  <div class="login-card">
-    <div class="login-logo">★</div>
+<!-- ── STEP 1: PASSWORD ── -->
+<div class="center-screen" id="step-password">
+  <div class="auth-card">
+    <div class="logo">★</div>
     <h1>TechForDad Admin</h1>
-    <p>Enter your password to continue</p>
+    <p>Enter your admin password</p>
     <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password"/>
-    <button id="login-btn">Sign In</button>
-    <div class="login-error" id="login-error">Incorrect password. Try again.</div>
+    <button class="btn btn-primary" id="pw-btn" style="width:100%;justify-content:center;padding:12px">Sign In</button>
+    <p class="auth-err hide" id="pw-err">Incorrect password.</p>
+  </div>
+</div>
+
+<!-- ── STEP 2: GITHUB TOKEN SETUP ── -->
+<div class="center-screen hide" id="step-token">
+  <div class="auth-card">
+    <div class="logo">⚙</div>
+    <h1>Connect GitHub</h1>
+    <p>A GitHub Personal Access Token lets the admin page read and update your files directly. This is stored only in your browser.</p>
+    <label>GitHub Personal Access Token</label>
+    <input type="password" id="pat-input" placeholder="github_pat_..."/>
+    <p style="font-size:12px;color:#94a3b8;text-align:left;margin-bottom:16px;line-height:1.5">
+      Create one at <strong>github.com → Settings → Developer settings → Personal access tokens → Fine-grained tokens</strong><br>
+      Permissions needed: <strong>Contents</strong> (read &amp; write) + <strong>Actions</strong> (write)
+    </p>
+    <button class="btn btn-primary" id="pat-btn" style="width:100%;justify-content:center;padding:12px">Save &amp; Continue</button>
+    <p class="auth-err hide" id="pat-err">Could not verify token. Check it and try again.</p>
   </div>
 </div>
 
 <!-- ── DASHBOARD ── -->
-<div id="dashboard">
-  <header>
-    <div class="h-left">
-      <span class="h-logo">★ TechForDad</span>
-      <span class="h-badge">ADMIN</span>
+<div id="app">
+  <div class="topbar">
+    <span class="topbar-logo">★ TechForDad</span>
+    <div class="tabs">
+      <button class="tab active" data-tab="overview">Overview</button>
+      <button class="tab" data-tab="prices">Price Manager</button>
+      <button class="tab" data-tab="articles">Articles</button>
+      <button class="tab" data-tab="actions">Run Actions</button>
     </div>
-    <div class="h-right">
+    <div class="topbar-right">
       <a href="https://www.techfordad.com" target="_blank">↗ Live Site</a>
-      <button id="logout-btn">Sign out</button>
+      <button class="btn btn-ghost" id="logout-btn" style="padding:5px 12px;font-size:12px">Sign out</button>
     </div>
-  </header>
+  </div>
 
-  <div class="container">
-
-    <!-- Stats -->
+  <!-- OVERVIEW -->
+  <div class="page active" id="tab-overview">
     <div class="stats">
-      <div class="stat"><div class="num" id="stat-total">—</div><div class="lbl">Total pages</div></div>
-      <div class="stat"><div class="num" id="stat-blogs">—</div><div class="lbl">Blog posts</div></div>
-      <div class="stat"><div class="num" id="stat-guides">—</div><div class="lbl">Guides</div></div>
-      <div class="stat"><div class="num" id="stat-sitemap">—</div><div class="lbl">In sitemap</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-total">—</div><div class="stat-lbl">Total articles</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-blogs">—</div><div class="stat-lbl">Blog posts</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-guides">—</div><div class="stat-lbl">Guides</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-sitemap">—</div><div class="stat-lbl">In sitemap</div></div>
     </div>
-
-    <!-- Quick links -->
-    <div class="quick-links">
+    <div class="qlinks">
       <a class="ql" href="https://adsense.google.com" target="_blank">💰 AdSense</a>
       <a class="ql" href="https://analytics.google.com" target="_blank">📊 Analytics</a>
       <a class="ql" href="https://search.google.com/search-console" target="_blank">🔍 Search Console</a>
@@ -137,169 +185,460 @@
       <a class="ql" href="https://claude.ai/code/routines" target="_blank">🗓 Claude Routines</a>
       <a class="ql" href="https://us2.admin.mailchimp.com" target="_blank">✉ Mailchimp</a>
     </div>
-
-    <!-- Automations -->
-    <div class="auto-grid">
-      <div class="auto-card">
-        <h3>🤖 Cloud Routines (Claude)</h3>
-        <div class="auto-row"><span class="lbl">Article Creator</span><span class="val">Every Wednesday 8am UTC <span class="badge-on">ON</span></span></div>
-        <div class="auto-row"><span class="lbl">Content Auditor</span><span class="val">Every Saturday 8am UTC <span class="badge-on">ON</span></span></div>
-        <div class="auto-row"><span class="lbl">Manage routines</span><span class="val"><a href="https://claude.ai/code/routines" target="_blank" style="color:#4f46e5;text-decoration:none">claude.ai/code/routines →</a></span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
+      <div class="panel">
+        <div class="panel-head"><h2>🤖 Automation Status</h2></div>
+        <div class="panel-body" style="padding:0">
+          <table>
+            <tr><td style="font-weight:600">Article Creator</td><td>Wed 8am UTC</td><td><span class="badge-on">ON</span></td></tr>
+            <tr><td style="font-weight:600">Content Auditor</td><td>Sat 8am UTC</td><td><span class="badge-on">ON</span></td></tr>
+            <tr><td style="font-weight:600">Price Updater</td><td>Sat 9am UTC</td><td><span class="badge-on">ON</span></td></tr>
+            <tr><td style="font-weight:600">Price Checklist</td><td>Sat 8am UTC</td><td><span class="badge-on">ON</span></td></tr>
+          </table>
+        </div>
       </div>
-      <div class="auto-card">
-        <h3>⚙ GitHub Actions</h3>
-        <div class="auto-row"><span class="lbl">Auto Price Updater</span><span class="val">Every Saturday 9am UTC <span class="badge-on">ON</span></span></div>
-        <div class="auto-row"><span class="lbl">Weekly Price Checklist</span><span class="val">Every Saturday 8am UTC <span class="badge-sat">ISSUE</span></span></div>
-        <div class="auto-row"><span class="lbl">View runs</span><span class="val"><a href="https://github.com/abhikarmaker/techfordad-blog/actions" target="_blank" style="color:#4f46e5;text-decoration:none">GitHub Actions →</a></span></div>
+      <div class="panel">
+        <div class="panel-head"><h2>📋 Recent Commits</h2></div>
+        <div class="panel-body" id="recent-commits"><div class="loading-text">Loading…</div></div>
       </div>
     </div>
-
-    <!-- Articles table -->
-    <div class="card">
-      <div class="card-head">
-        <h2>All Content</h2>
-        <span id="article-count">Loading…</span>
-      </div>
-      <div id="articles-body"><div class="loading">Loading articles…</div></div>
-    </div>
-
   </div>
-  <footer>TechForDad Admin · Private · <a href="https://www.techfordad.com" target="_blank" style="color:#94a3b8">techfordad.com</a></footer>
+
+  <!-- PRICE MANAGER -->
+  <div class="page hide" id="tab-prices">
+    <div class="panel">
+      <div class="panel-head">
+        <h2>💰 Price Manager</h2>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span id="price-status" style="font-size:12px;color:#64748b"></span>
+          <button class="btn btn-amber" id="btn-run-price-updater">🤖 Run Auto-Updater</button>
+          <button class="btn btn-green" id="btn-save-prices" disabled>💾 Save Changes</button>
+        </div>
+      </div>
+      <div class="panel-body" id="price-grid"><div class="loading-text">Loading products…</div></div>
+    </div>
+  </div>
+
+  <!-- ARTICLES -->
+  <div class="page hide" id="tab-articles">
+    <div class="panel">
+      <div class="panel-head">
+        <h2>📝 Articles &amp; Guides</h2>
+        <span id="article-count" style="font-size:12px;color:#64748b"></span>
+      </div>
+      <div id="article-list"><div class="loading-text">Loading…</div></div>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="page hide" id="tab-actions">
+    <div class="action-grid">
+      <div class="action-card">
+        <h3>📝 Article Creator</h3>
+        <p>Writes a brand-new article on an uncovered senior tech topic, adds it to the blog index and sitemap, and pushes to GitHub.</p>
+        <button class="btn btn-primary" data-workflow="article-creator.yml">▶ Run Now</button>
+      </div>
+      <div class="action-card">
+        <h3>🔍 Content Auditor</h3>
+        <p>Scans every existing article for outdated products, stale prices, and old year references. Updates and commits what it finds.</p>
+        <button class="btn btn-primary" data-workflow="content-auditor.yml">▶ Run Now</button>
+      </div>
+      <div class="action-card">
+        <h3>💰 Auto Price Updater</h3>
+        <p>Uses Claude AI web search to find current prices for all 51 products, patches HTML files, and pushes changes automatically.</p>
+        <button class="btn btn-amber" data-workflow="auto-price-update.yml">▶ Run Now</button>
+      </div>
+      <div class="action-card">
+        <h3>📋 Price Check Issue</h3>
+        <p>Creates a GitHub Issue with a manual checklist of all products and their current listed prices for your review.</p>
+        <button class="btn btn-ghost" data-workflow="weekly-price-check.yml">▶ Run Now</button>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:20px">
+      <div class="panel-head"><h2>Recent Workflow Runs</h2></div>
+      <div class="panel-body" id="workflow-runs"><div class="loading-text">Loading…</div></div>
+    </div>
+  </div>
 </div>
 
+<!-- ── ARTICLE EDITOR MODAL ── -->
+<div id="editor-panel">
+  <div class="editor-modal">
+    <div class="editor-header">
+      <h3 id="editor-title">Edit Article</h3>
+      <button class="btn btn-ghost" id="editor-close">✕ Close</button>
+    </div>
+    <div class="editor-tabs">
+      <button class="etab active" data-etab="meta">Meta / SEO</button>
+      <button class="etab" data-etab="html">Full HTML</button>
+    </div>
+    <div class="editor-body">
+      <!-- Meta tab -->
+      <div id="etab-meta">
+        <div class="meta-field"><label>Page Title</label><input id="edit-title" type="text"/></div>
+        <div class="meta-field"><label>Meta Description</label><textarea id="edit-desc"></textarea></div>
+        <div class="meta-field"><label>H1 Heading</label><input id="edit-h1" type="text"/></div>
+      </div>
+      <!-- HTML tab -->
+      <div id="etab-html" class="hide">
+        <textarea class="code-editor" id="edit-html" spellcheck="false"></textarea>
+      </div>
+    </div>
+    <div class="editor-footer">
+      <input class="commit-msg-input" id="commit-msg" type="text" placeholder="Commit message (e.g. Update medical alert article)"/>
+      <button class="btn btn-ghost" id="editor-cancel">Cancel</button>
+      <button class="btn btn-green" id="editor-save">💾 Save to GitHub</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-  const HASH = 'a4bfebb818a1e7188ca8a644eccd147473c53a1a1b58be46abbc69f480e38322';
-  const SESSION_KEY = 'tfd_admin_auth';
-  const SESSION_TTL = 7 * 24 * 60 * 60 * 1000; // 7 days
+const OWNER = 'abhikarmaker';
+const REPO  = 'techfordad-blog';
+const BRANCH = 'main';
+const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
+const PW_HASH = 'a4bfebb818a1e7188ca8a644eccd147473c53a1a1b58be46abbc69f480e38322';
+const SESSION_KEY = 'tfd_v2_session';
 
-  async function sha256(str) {
-    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-  }
+// ── utils ──
+async function sha256(s){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+const toB64=s=>btoa(unescape(encodeURIComponent(s)));
+const fromB64=s=>decodeURIComponent(escape(atob(s.replace(/\n/g,''))));
 
-  function isAuthenticated() {
-    try {
-      const s = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
-      return s.token === HASH && Date.now() < s.expires;
-    } catch { return false; }
-  }
+function toast(msg,isErr=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast'+(isErr?' err':'')+' show';
+  setTimeout(()=>t.className='toast',3000);
+}
 
-  function saveSession() {
-    localStorage.setItem(SESSION_KEY, JSON.stringify({ token: HASH, expires: Date.now() + SESSION_TTL }));
-  }
+// ── session ──
+function getSession(){try{return JSON.parse(localStorage.getItem(SESSION_KEY)||'{}')}catch{return{}}}
+function saveSession(data){localStorage.setItem(SESSION_KEY,JSON.stringify({...getSession(),...data,expires:Date.now()+7*864e5}))}
+function getPat(){return getSession().pat||''}
+function isAuthed(){const s=getSession();return s.pwok&&s.pat&&Date.now()<s.expires}
 
-  function showDashboard() {
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    loadArticles();
-  }
+// ── GitHub API ──
+function ghHeaders(){return{'Authorization':'token '+getPat(),'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'}}
 
-  async function tryLogin() {
-    const pw = document.getElementById('pw-input').value;
-    const err = document.getElementById('login-error');
-    if (!pw) return;
-    const h = await sha256(pw);
-    if (h === HASH) {
-      saveSession();
-      showDashboard();
-    } else {
-      err.style.display = 'block';
-      document.getElementById('pw-input').value = '';
-      document.getElementById('pw-input').focus();
-    }
-  }
+async function ghGet(path){
+  const r=await fetch(API+path,{headers:ghHeaders()});
+  if(!r.ok)throw new Error('GitHub '+r.status+': '+await r.text());
+  return r.json();
+}
+async function ghGetFile(path){
+  const d=await ghGet('/contents/'+path);
+  return{content:fromB64(d.content),sha:d.sha};
+}
+async function ghPutFile(path,content,sha,msg){
+  const r=await fetch(API+'/contents/'+path,{method:'PUT',headers:ghHeaders(),
+    body:JSON.stringify({message:msg,content:toB64(content),sha,branch:BRANCH})});
+  if(!r.ok){const e=await r.json();throw new Error(e.message||'GitHub '+r.status);}
+  return r.json();
+}
+async function ghTrigger(workflow){
+  const r=await fetch(API+'/actions/workflows/'+workflow+'/dispatches',
+    {method:'POST',headers:ghHeaders(),body:JSON.stringify({ref:BRANCH})});
+  if(!r.ok)throw new Error('Could not trigger workflow: '+r.status);
+}
 
-  document.getElementById('login-btn').addEventListener('click', tryLogin);
-  document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
-  document.getElementById('logout-btn').addEventListener('click', () => {
-    localStorage.removeItem(SESSION_KEY);
-    location.reload();
+// ── auth flow ──
+document.getElementById('pw-btn').onclick=async()=>{
+  const pw=document.getElementById('pw-input').value;
+  const err=document.getElementById('pw-err');
+  const h=await sha256(pw);
+  if(h===PW_HASH){
+    saveSession({pwok:true});
+    err.classList.add('hide');
+    if(getPat()){initDashboard();}
+    else{document.getElementById('step-password').classList.add('hide');document.getElementById('step-token').classList.remove('hide');}
+  } else { err.classList.remove('hide'); document.getElementById('pw-input').value=''; }
+};
+document.getElementById('pw-input').onkeydown=e=>{if(e.key==='Enter')document.getElementById('pw-btn').click()};
+
+document.getElementById('pat-btn').onclick=async()=>{
+  const pat=document.getElementById('pat-input').value.trim();
+  const err=document.getElementById('pat-err');
+  if(!pat)return;
+  // quick verify
+  const r=await fetch(`https://api.github.com/repos/${OWNER}/${REPO}`,{headers:{'Authorization':'token '+pat}});
+  if(!r.ok){err.classList.remove('hide');return;}
+  err.classList.add('hide');
+  saveSession({pat});
+  initDashboard();
+};
+
+document.getElementById('logout-btn').onclick=()=>{localStorage.removeItem(SESSION_KEY);location.reload()};
+
+if(isAuthed())initDashboard();
+else if(getSession().pwok&&!getPat()){
+  document.getElementById('step-password').classList.add('hide');
+  document.getElementById('step-token').classList.remove('hide');
+}
+
+// ── tabs ──
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(x=>x.classList.add('hide'));
+  t.classList.add('active');
+  document.getElementById('tab-'+t.dataset.tab).classList.remove('hide');
+});
+document.querySelectorAll('.etab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.etab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('[id^="etab-"]').forEach(x=>x.classList.add('hide'));
+  t.classList.add('active');
+  document.getElementById('etab-'+t.dataset.etab).classList.remove('hide');
+});
+
+// ── dashboard init ──
+function initDashboard(){
+  document.getElementById('step-password').classList.add('hide');
+  document.getElementById('step-token').classList.add('hide');
+  document.getElementById('app').style.display='flex';
+  loadOverview();
+  loadPrices();
+  loadArticles();
+  loadWorkflowRuns();
+}
+
+// ── overview ──
+async function loadOverview(){
+  try{
+    const[blogs,guides,commits]=await Promise.all([
+      ghGet('/contents/blog'),
+      ghGet('/contents/guides'),
+      ghGet('/commits?per_page=8'),
+    ]);
+    const blogCount=blogs.filter(f=>f.name.endsWith('.html')&&f.name!=='index.html').length;
+    const guideCount=guides.filter(f=>f.name.endsWith('.html')&&f.name!=='index.html').length;
+    document.getElementById('s-blogs').textContent=blogCount;
+    document.getElementById('s-guides').textContent=guideCount;
+    document.getElementById('s-total').textContent=blogCount+guideCount;
+
+    const sm=await fetch('/sitemap.xml').then(r=>r.text());
+    document.getElementById('s-sitemap').textContent=(sm.match(/<loc>/g)||[]).length;
+
+    document.getElementById('recent-commits').innerHTML=commits.map(c=>`
+      <div class="commit-item">
+        <div class="commit-msg">${c.commit.message.split('\n')[0].slice(0,72)}</div>
+        <div class="commit-meta">
+          <a class="commit-sha" href="${c.html_url}" target="_blank">${c.sha.slice(0,7)}</a>
+          · ${c.commit.author.name} · ${new Date(c.commit.author.date).toLocaleDateString()}
+        </div>
+      </div>`).join('');
+  }catch(e){document.getElementById('recent-commits').innerHTML='<div class="loading-text">'+e.message+'</div>';}
+}
+
+// ── prices ──
+let productsJson=null, productsSha=null, originalPrices={};
+
+async function loadPrices(){
+  try{
+    const {content,sha}=await ghGetFile('scripts/products.json');
+    productsJson=JSON.parse(content); productsSha=sha;
+    // snapshot originals
+    originalPrices={};
+    productsJson.forEach((a,ai)=>a.products.forEach((p,pi)=>{originalPrices[ai+'-'+pi]=p.price}));
+    renderPriceGrid();
+    document.getElementById('price-status').textContent='Loaded from GitHub';
+  }catch(e){document.getElementById('price-grid').innerHTML='<div class="loading-text">'+e.message+'</div>';}
+}
+
+function renderPriceGrid(){
+  if(!productsJson)return;
+  document.getElementById('price-grid').innerHTML=productsJson.map((article,ai)=>`
+    <div class="price-group">
+      <h3>${article.article} <span style="font-weight:400;color:#94a3b8;font-size:11px">→ ${article.file}</span></h3>
+      ${article.products.map((p,pi)=>`
+        <div class="price-row">
+          <div class="price-name">${p.name}</div>
+          <input class="price-input" data-ai="${ai}" data-pi="${pi}" value="${p.price}" placeholder="$0.00/mo"/>
+          <a class="price-check-link" href="${p.check_url}" target="_blank">↗ Check price</a>
+        </div>`).join('')}
+    </div>`).join('');
+
+  document.querySelectorAll('.price-input').forEach(inp=>{
+    inp.addEventListener('input',()=>{
+      const key=inp.dataset.ai+'-'+inp.dataset.pi;
+      inp.classList.toggle('changed',inp.value!==originalPrices[key]);
+      const anyChanged=document.querySelector('.price-input.changed');
+      document.getElementById('btn-save-prices').disabled=!anyChanged;
+      document.getElementById('price-status').textContent=anyChanged?'Unsaved changes':'All saved';
+    });
   });
+}
 
-  if (isAuthenticated()) showDashboard();
+document.getElementById('btn-save-prices').onclick=async()=>{
+  const btn=document.getElementById('btn-save-prices');
+  const changed=[];
+  document.querySelectorAll('.price-input.changed').forEach(inp=>{
+    const ai=+inp.dataset.ai, pi=+inp.dataset.pi;
+    changed.push({ai,pi,oldPrice:productsJson[ai].products[pi].price,newPrice:inp.value});
+  });
+  if(!changed.length)return;
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Saving…';
+  try{
+    // 1. Apply to productsJson
+    changed.forEach(({ai,pi,newPrice})=>productsJson[ai].products[pi].price=newPrice);
+    const newJson=JSON.stringify(productsJson,null,2)+'\n';
+    await ghPutFile('scripts/products.json',newJson,productsSha,'Update product prices via admin');
 
-  async function loadArticles() {
-    try {
-      // Count sitemap URLs
-      const sm = await fetch('/sitemap.xml').then(r => r.text());
-      const sitemapCount = (sm.match(/<loc>/g) || []).length;
-      document.getElementById('stat-sitemap').textContent = sitemapCount;
-
-      // Fetch blog index
-      const blogHtml = await fetch('/blog/index.html').then(r => r.text());
-      const parser = new DOMParser();
-      const blogDoc = parser.parseFromString(blogHtml, 'text/html');
-      const blogCards = blogDoc.querySelectorAll('.card');
-
-      // Fetch guides index
-      const guidesHtml = await fetch('/guides/index.html').then(r => r.text());
-      const guidesDoc = parser.parseFromString(guidesHtml, 'text/html');
-      const guideLinks = guidesDoc.querySelectorAll('.about-body a[href]');
-
-      const articles = [];
-
-      blogCards.forEach(card => {
-        const titleEl = card.querySelector('h3');
-        const descEl  = card.querySelector('p');
-        const linkEl  = card.querySelector('a[href]');
-        if (!titleEl || !linkEl) return;
-        const href = linkEl.getAttribute('href');
-        articles.push({
-          title: titleEl.textContent.trim(),
-          desc:  descEl ? descEl.textContent.trim() : '',
-          type:  'Blog Post',
-          url:   'https://www.techfordad.com/blog/' + href.replace(/^.*\//, ''),
-          ghUrl: 'https://github.com/abhikarmaker/techfordad-blog/blob/main/blog/' + href.replace(/^.*\//, ''),
-        });
-      });
-
-      const guideSet = new Set();
-      guideLinks.forEach(a => {
-        const href = a.getAttribute('href');
-        if (!href || href.startsWith('..') || href.startsWith('http') || guideSet.has(href)) return;
-        guideSet.add(href);
-        const h2 = a.querySelector('h2');
-        const p  = a.querySelector('p');
-        if (!h2) return;
-        const slug = href.replace('.html','');
-        articles.push({
-          title: h2.textContent.trim(),
-          desc:  p ? p.textContent.trim() : '',
-          type:  'Guide',
-          url:   'https://www.techfordad.com/guides/' + slug + '.html',
-          ghUrl: 'https://github.com/abhikarmaker/techfordad-blog/blob/main/guides/' + slug + '.html',
-        });
-      });
-
-      const blogs  = articles.filter(a => a.type === 'Blog Post').length;
-      const guides = articles.filter(a => a.type === 'Guide').length;
-      document.getElementById('stat-total').textContent = articles.length;
-      document.getElementById('stat-blogs').textContent = blogs;
-      document.getElementById('stat-guides').textContent = guides;
-      document.getElementById('article-count').textContent = articles.length + ' items';
-
-      const rows = articles.map(a => `
-        <tr>
-          <td>
-            <div class="art-title">${a.title}</div>
-            <div class="art-desc">${a.desc.slice(0,120)}${a.desc.length > 120 ? '…' : ''}</div>
-          </td>
-          <td><span class="tag ${a.type === 'Blog Post' ? 'tag-blog' : 'tag-guide'}">${a.type}</span></td>
-          <td style="white-space:nowrap">
-            <div class="act">
-              <a class="live" href="${a.url}" target="_blank">↗ Live</a>
-              <a class="gh" href="${a.ghUrl}" target="_blank">⚙ GitHub</a>
-            </div>
-          </td>
-        </tr>`).join('');
-
-      document.getElementById('articles-body').innerHTML =
-        `<table><thead><tr><th>Title</th><th>Type</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
-    } catch(e) {
-      document.getElementById('articles-body').innerHTML =
-        `<div class="loading">Could not load articles — ${e.message}</div>`;
+    // 2. Patch HTML files for each changed price
+    const fileChanges={};
+    changed.forEach(({ai,pi,oldPrice,newPrice})=>{
+      const file=productsJson[ai].file;
+      if(!fileChanges[file])fileChanges[file]={oldNew:[]};
+      fileChanges[file].oldNew.push({oldPrice,newPrice});
+    });
+    for(const[file,{oldNew}]of Object.entries(fileChanges)){
+      try{
+        const{content,sha}=await ghGetFile(file);
+        let updated=content;
+        oldNew.forEach(({oldPrice,newPrice})=>{updated=updated.split(oldPrice).join(newPrice)});
+        if(updated!==content)await ghPutFile(file,updated,sha,'Update prices in '+file+' via admin');
+      }catch(e){console.warn('Could not patch '+file+':',e.message);}
     }
+
+    // Refresh
+    const res=await ghGetFile('scripts/products.json');
+    productsSha=res.sha;
+    changed.forEach(({ai,pi,newPrice})=>{originalPrices[ai+'-'+pi]=newPrice});
+    document.querySelectorAll('.price-input.changed').forEach(i=>i.classList.remove('changed'));
+    btn.disabled=true; btn.innerHTML='💾 Save Changes';
+    document.getElementById('price-status').textContent='Saved ✓';
+    toast('Prices saved and HTML files updated');
+  }catch(e){toast(e.message,true); btn.disabled=false; btn.innerHTML='💾 Save Changes';}
+};
+
+document.getElementById('btn-run-price-updater').onclick=async()=>{
+  const btn=document.getElementById('btn-run-price-updater');
+  btn.disabled=true; btn.innerHTML='<span class="spinner" style="border-top-color:#fff"></span> Triggering…';
+  try{
+    await ghTrigger('auto-price-update.yml');
+    toast('Price updater triggered — check GitHub Actions in ~1 min');
+  }catch(e){toast(e.message,true);}
+  btn.disabled=false; btn.innerHTML='🤖 Run Auto-Updater';
+};
+
+// ── articles ──
+async function loadArticles(){
+  try{
+    const[blogs,guides]=await Promise.all([ghGet('/contents/blog'),ghGet('/contents/guides')]);
+    const allFiles=[
+      ...blogs.filter(f=>f.name.endsWith('.html')&&f.name!=='index.html').map(f=>({...f,type:'Blog Post',dir:'blog'})),
+      ...guides.filter(f=>f.name.endsWith('.html')&&f.name!=='index.html').map(f=>({...f,type:'Guide',dir:'guides'})),
+    ];
+    document.getElementById('article-count').textContent=allFiles.length+' articles';
+    document.getElementById('article-list').innerHTML='<table>'+
+      '<thead><tr><th>File</th><th>Type</th><th style="width:160px">Actions</th></tr></thead><tbody>'+
+      allFiles.map(f=>`<tr>
+        <td>
+          <div style="font-weight:600;color:#0f172a">${f.name.replace('.html','').replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}</div>
+          <div style="font-size:12px;color:#94a3b8">${f.dir}/${f.name}</div>
+        </td>
+        <td><span class="tag ${f.type==='Blog Post'?'tag-blog':'tag-guide'}">${f.type}</span></td>
+        <td>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-ghost" style="padding:5px 10px;font-size:12px" onclick="openEditor('${f.dir}/${f.name}')">✎ Edit</button>
+            <a class="btn btn-ghost" style="padding:5px 10px;font-size:12px;text-decoration:none" href="https://www.techfordad.com/${f.dir}/${f.name}" target="_blank">↗ Live</a>
+          </div>
+        </td>
+      </tr>`).join('')+
+      '</tbody></table>';
+  }catch(e){document.getElementById('article-list').innerHTML='<div class="loading-text">'+e.message+'</div>';}
+}
+
+// ── editor ──
+let editorFile=null, editorSha=null, editorOriginal=null;
+async function openEditor(path){
+  editorFile=path;
+  document.getElementById('editor-title').textContent='✎ '+path;
+  document.getElementById('editor-save').disabled=true;
+  document.getElementById('editor-save').innerHTML='💾 Save to GitHub';
+  document.getElementById('commit-msg').value='Update '+path.split('/').pop().replace('.html','').replace(/-/g,' ');
+  document.getElementById('edit-html').value='Loading…';
+  document.getElementById('editor-panel').classList.add('open');
+  try{
+    const{content,sha}=await ghGetFile(path);
+    editorSha=sha; editorOriginal=content;
+    document.getElementById('edit-html').value=content;
+    // parse meta
+    document.getElementById('edit-title').value=(content.match(/<title>([^<]+)<\/title>/)||[])[1]||'';
+    document.getElementById('edit-desc').value=(content.match(/<meta name="description" content="([^"]+)"/)||[])[1]||'';
+    document.getElementById('edit-h1').value=(content.match(/<h1[^>]*>([^<]+)<\/h1>/)||[])[1]||'';
+    document.getElementById('editor-save').disabled=false;
+  }catch(e){document.getElementById('edit-html').value='Error: '+e.message;}
+}
+document.getElementById('editor-close').onclick=
+document.getElementById('editor-cancel').onclick=()=>document.getElementById('editor-panel').classList.remove('open');
+document.getElementById('editor-panel').onclick=e=>{if(e.target===document.getElementById('editor-panel'))document.getElementById('editor-panel').classList.remove('open')};
+
+document.getElementById('editor-save').onclick=async()=>{
+  const btn=document.getElementById('editor-save');
+  const activeTab=document.querySelector('.etab.active').dataset.etab;
+  let content=editorOriginal;
+  if(activeTab==='html'){
+    content=document.getElementById('edit-html').value;
+  } else {
+    // apply meta edits
+    const title=document.getElementById('edit-title').value;
+    const desc=document.getElementById('edit-desc').value;
+    const h1=document.getElementById('edit-h1').value;
+    content=content.replace(/(<title>)[^<]+(<\/title>)/,`$1${title}$2`);
+    content=content.replace(/(<meta name="description" content=")[^"]+(")/,`$1${desc}$2`);
+    content=content.replace(/(<h1[^>]*>)[^<]+(<\/h1>)/,`$1${h1}$2`);
+    // also update og:title and og:description
+    content=content.replace(/(<meta property="og:title" content=")[^"]+(")/,`$1${title}$2`);
+    content=content.replace(/(<meta property="og:description" content=")[^"]+(")/,`$1${desc}$2`);
   }
+  const msg=document.getElementById('commit-msg').value||'Update '+editorFile;
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Saving…';
+  try{
+    await ghPutFile(editorFile,content,editorSha,msg);
+    editorOriginal=content;
+    const res=await ghGetFile(editorFile); editorSha=res.sha;
+    toast('Saved and pushed to GitHub ✓');
+    document.getElementById('editor-panel').classList.remove('open');
+  }catch(e){toast(e.message,true);}
+  btn.disabled=false; btn.innerHTML='💾 Save to GitHub';
+};
+
+// ── actions ──
+document.querySelectorAll('[data-workflow]').forEach(btn=>{
+  btn.onclick=async()=>{
+    const wf=btn.dataset.workflow;
+    btn.disabled=true; btn.innerHTML='<span class="spinner" style="border-top-color:inherit"></span> Triggering…';
+    try{
+      await ghTrigger(wf);
+      toast(wf+' triggered — check GitHub Actions');
+      loadWorkflowRuns();
+    }catch(e){toast(e.message,true);}
+    btn.disabled=false; btn.textContent='▶ Run Now';
+  };
+});
+
+async function loadWorkflowRuns(){
+  try{
+    const data=await ghGet('/actions/runs?per_page=10');
+    const runs=data.workflow_runs;
+    document.getElementById('workflow-runs').innerHTML='<table>'+
+      '<thead><tr><th>Workflow</th><th>Status</th><th>Started</th><th>Link</th></tr></thead><tbody>'+
+      runs.map(r=>{
+        const status=r.conclusion||r.status;
+        const color={success:'#16a34a',failure:'#dc2626',in_progress:'#d97706',queued:'#64748b'}[status]||'#64748b';
+        return`<tr>
+          <td style="font-weight:600">${r.name}</td>
+          <td><span style="color:${color};font-weight:700;font-size:12px">${status}</span></td>
+          <td style="color:#64748b;font-size:12px">${new Date(r.created_at).toLocaleString()}</td>
+          <td><a href="${r.html_url}" target="_blank" style="color:#4f46e5;font-size:12px;font-weight:600">View →</a></td>
+        </tr>`;
+      }).join('')+'</tbody></table>';
+  }catch(e){document.getElementById('workflow-runs').innerHTML='<div class="loading-text">'+e.message+'</div>';}
+}
 </script>
 </body>
 </html>
