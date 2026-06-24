@@ -3,8 +3,8 @@
     "article": "Best Medical Alert Systems",
     "file": "blog/best-medical-alert-systems.html",
     "products": [
-      { "name": "Medical Guardian MGHome Cellular", "price": "$29.95/mo", "check_url": "https://www.medicalguardian.com" },
-      { "name": "Bay Alarm Medical SOS Mobile", "price": "$24.95/mo", "check_url": "https://www.bayalarmmedical.com" },
+      { "name": "Medical Guardian MGHome Cellular", "price": "$34.95/mo", "check_url": "https://www.medicalguardian.com" },
+      { "name": "Bay Alarm Medical SOS Mobile", "price": "$27.95/mo", "check_url": "https://www.bayalarmmedical.com" },
       { "name": "Lively Mobile Plus", "price": "$24.99/mo", "check_url": "https://www.lively.com" },
       { "name": "Apple Watch SE", "price": "$249", "check_url": "https://www.apple.com/apple-watch/" },
       { "name": "Medical Alert Classic", "price": "$19.95/mo", "check_url": "https://www.medicalalert.com" }
@@ -16,7 +16,7 @@
     "products": [
       { "name": "Life Alert Home (base plan)", "price": "$29.95/mo", "check_url": "https://www.lifealert.com" },
       { "name": "Life Alert Help + 3-button", "price": "$49.95/mo", "check_url": "https://www.lifealert.com" },
-      { "name": "Medical Guardian MGHome Cellular", "price": "$29.95/mo", "check_url": "https://www.medicalguardian.com" }
+      { "name": "Medical Guardian MGHome Cellular", "price": "$34.95/mo", "check_url": "https://www.medicalguardian.com" }
     ]
   },
   {
@@ -26,7 +26,7 @@
       { "name": "Apple Watch SE", "price": "$249", "check_url": "https://www.apple.com/apple-watch/" },
       { "name": "Medical Alert Classic", "price": "$19.95/mo", "check_url": "https://www.medicalalert.com" },
       { "name": "Lively Mobile Plus", "price": "$24.99/mo", "check_url": "https://www.lively.com" },
-      { "name": "Bay Alarm Medical SOS Mobile", "price": "$24.95/mo", "check_url": "https://www.bayalarmmedical.com" }
+      { "name": "Bay Alarm Medical SOS Mobile", "price": "$27.95/mo", "check_url": "https://www.bayalarmmedical.com" }
     ]
   },
   {
