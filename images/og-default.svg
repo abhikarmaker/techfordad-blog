@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#1B3A6B"/>
+  <rect x="0" y="0" width="8" height="630" fill="#E8A020"/>
+  <text x="80" y="220" font-family="Georgia, serif" font-size="72" font-weight="bold" fill="#FFFFFF">TechForDad</text>
+  <text x="80" y="300" font-family="Arial, sans-serif" font-size="32" fill="#E8A020">★ Trusted Tech Reviews for Seniors &amp; Caregivers</text>
+  <text x="80" y="390" font-family="Arial, sans-serif" font-size="26" fill="#CBD5E1">Honest reviews to help aging parents stay safe,</text>
+  <text x="80" y="430" font-family="Arial, sans-serif" font-size="26" fill="#CBD5E1">connected, and independent.</text>
+  <text x="80" y="560" font-family="Arial, sans-serif" font-size="22" fill="#94A3B8">www.techfordad.com</text>
+</svg>
