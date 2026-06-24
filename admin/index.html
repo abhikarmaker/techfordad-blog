@@ -223,7 +223,7 @@
   <div class="page hide" id="tab-articles">
     <div class="panel">
       <div class="panel-head">
-        <h2>📝 Articles &amp; Guides</h2>
+        <h2>All Content</h2>
         <span id="article-count" style="font-size:12px;color:#64748b"></span>
       </div>
       <div id="article-list"><div class="loading-text">Loading…</div></div>
@@ -408,18 +408,10 @@ function initDashboard(){
 // ── overview ──
 async function loadOverview(){
   try{
-    const[blogs,guides,commits]=await Promise.all([
-      ghGet('/contents/blog'),
-      ghGet('/contents/guides'),
+    const[commits,sm]=await Promise.all([
       ghGet('/commits?per_page=8'),
+      fetch('/sitemap.xml').then(r=>r.text()),
     ]);
-    const blogCount=blogs.filter(f=>f.name.endsWith('.html')&&f.name!=='index.html').length;
-    const guideCount=guides.filter(f=>f.name.endsWith('.html')&&f.name!=='index.html').length;
-    document.getElementById('s-blogs').textContent=blogCount;
-    document.getElementById('s-guides').textContent=guideCount;
-    document.getElementById('s-total').textContent=blogCount+guideCount;
-
-    const sm=await fetch('/sitemap.xml').then(r=>r.text());
     document.getElementById('s-sitemap').textContent=(sm.match(/<loc>/g)||[]).length;
 
     document.getElementById('recent-commits').innerHTML=commits.map(c=>`
@@ -527,28 +519,50 @@ document.getElementById('btn-run-price-updater').onclick=async()=>{
 // ── articles ──
 async function loadArticles(){
   try{
-    const[blogs,guides]=await Promise.all([ghGet('/contents/blog'),ghGet('/contents/guides')]);
-    const allFiles=[
-      ...blogs.filter(f=>f.name.endsWith('.html')&&f.name!=='index.html').map(f=>({...f,type:'Blog Post',dir:'blog'})),
-      ...guides.filter(f=>f.name.endsWith('.html')&&f.name!=='index.html').map(f=>({...f,type:'Guide',dir:'guides'})),
-    ];
-    document.getElementById('article-count').textContent=allFiles.length+' articles';
-    document.getElementById('article-list').innerHTML='<table>'+
-      '<thead><tr><th>File</th><th>Type</th><th style="width:160px">Actions</th></tr></thead><tbody>'+
-      allFiles.map(f=>`<tr>
-        <td>
-          <div style="font-weight:600;color:#0f172a">${f.name.replace('.html','').replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}</div>
-          <div style="font-size:12px;color:#94a3b8">${f.dir}/${f.name}</div>
-        </td>
-        <td><span class="tag ${f.type==='Blog Post'?'tag-blog':'tag-guide'}">${f.type}</span></td>
-        <td>
-          <div style="display:flex;gap:6px">
-            <button class="btn btn-ghost" style="padding:5px 10px;font-size:12px" onclick="openEditor('${f.dir}/${f.name}')">✎ Edit</button>
-            <a class="btn btn-ghost" style="padding:5px 10px;font-size:12px;text-decoration:none" href="https://www.techfordad.com/${f.dir}/${f.name}" target="_blank">↗ Live</a>
+    const [blogHtml, guidesHtml] = await Promise.all([
+      fetch('/blog/index.html').then(r=>r.text()),
+      fetch('/guides/index.html').then(r=>r.text()),
+    ]);
+    const parser = new DOMParser();
+
+    function parseCards(html, type, dir){
+      const doc = parser.parseFromString(html, 'text/html');
+      return [...doc.querySelectorAll('.card')].map(card=>{
+        const link = card.querySelector('a.card-link');
+        const href = link?.getAttribute('href')||'';
+        const filename = href.split('/').pop();
+        return {
+          title: card.querySelector('h3')?.textContent.trim()||'',
+          desc:  card.querySelector('p')?.textContent.trim()||'',
+          filename, dir, type,
+          path: dir+'/'+filename,
+        };
+      }).filter(a=>a.filename&&a.filename.endsWith('.html')&&a.filename!=='index.html');
+    }
+
+    const all = [...parseCards(blogHtml,'Blog Post','blog'), ...parseCards(guidesHtml,'Guide','guides')];
+    document.getElementById('article-count').textContent = all.length+' items';
+    // update overview stats
+    document.getElementById('s-blogs').textContent=all.filter(a=>a.type==='Blog Post').length;
+    document.getElementById('s-guides').textContent=all.filter(a=>a.type==='Guide').length;
+    document.getElementById('s-total').textContent=all.length;
+
+    const header=`<div style="display:grid;grid-template-columns:1fr 120px auto;gap:10px;padding:10px 18px;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #f1f5f9;background:#f8fafc"><span>TITLE</span><span>TYPE</span><span>ACTIONS</span></div>`;
+    document.getElementById('article-list').innerHTML = header + all.map(a=>`
+      <div class="article-list-item">
+        <div class="art-info" style="flex:1;min-width:0">
+          <h4>${a.title}</h4>
+          <p>${a.desc}</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+          <span class="tag ${a.type==='Blog Post'?'tag-blog':'tag-guide'}">${a.type}</span>
+          <div class="art-actions">
+            <button class="btn btn-primary" style="padding:5px 12px;font-size:12px" onclick="openEditor('${a.path}')">✎ Edit</button>
+            <a class="btn btn-ghost" style="padding:5px 12px;font-size:12px;text-decoration:none" href="https://www.techfordad.com/${a.path}" target="_blank">↗ Live</a>
+            <a class="btn btn-ghost" style="padding:5px 12px;font-size:12px;text-decoration:none" href="https://github.com/${OWNER}/${REPO}/blob/main/${a.path}" target="_blank">⊕ GitHub</a>
           </div>
-        </td>
-      </tr>`).join('')+
-      '</tbody></table>';
+        </div>
+      </div>`).join('');
   }catch(e){document.getElementById('article-list').innerHTML='<div class="loading-text">'+e.message+'</div>';}
 }
 
