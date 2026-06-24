@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>TechForDad Admin</title>
+  <meta name="robots" content="noindex, nofollow"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#0f172a;min-height:100vh}
+
+    /* ── Login ── */
+    #login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+    .login-card{background:#fff;border-radius:16px;padding:48px 40px;width:100%;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.12);text-align:center}
+    .login-logo{font-size:36px;margin-bottom:12px}
+    .login-card h1{font-size:20px;font-weight:800;color:#0f172a;margin-bottom:6px}
+    .login-card p{font-size:14px;color:#64748b;margin-bottom:28px}
+    .login-card input{width:100%;padding:12px 16px;border:2px solid #e2e8f0;border-radius:10px;font-size:16px;outline:none;transition:border-color .2s;margin-bottom:12px}
+    .login-card input:focus{border-color:#4f46e5}
+    .login-card button{width:100%;padding:13px;background:#1B3A6B;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:background .2s}
+    .login-card button:hover{background:#162f58}
+    .login-error{color:#dc2626;font-size:13px;margin-top:10px;display:none}
+
+    /* ── Dashboard ── */
+    #dashboard{display:none}
+    header{background:#0f172a;color:#fff;padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+    .h-left{display:flex;align-items:center;gap:12px}
+    .h-logo{font-size:17px;font-weight:800}
+    .h-badge{background:#dc2626;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.05em}
+    .h-right{display:flex;align-items:center;gap:16px}
+    .h-right a{color:#94a3b8;font-size:13px;text-decoration:none;transition:color .15s}
+    .h-right a:hover{color:#fff}
+    #logout-btn{background:none;border:1px solid #334155;color:#94a3b8;padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;transition:all .15s}
+    #logout-btn:hover{background:#334155;color:#fff}
+
+    .container{max-width:1120px;margin:28px auto;padding:0 24px}
+
+    /* stats */
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+    .stat{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px}
+    .stat .num{font-size:30px;font-weight:800;color:#0f172a;line-height:1}
+    .stat .lbl{font-size:12px;color:#64748b;margin-top:6px;font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+
+    /* quick links */
+    .quick-links{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px}
+    .ql{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:9px 16px;text-decoration:none;color:#374151;font-size:13px;font-weight:600;transition:all .15s}
+    .ql:hover{border-color:#4f46e5;color:#4f46e5;box-shadow:0 2px 8px rgba(79,70,229,.1)}
+
+    /* automations */
+    .auto-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+    .auto-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px}
+    .auto-card h3{font-size:14px;font-weight:700;margin-bottom:12px;color:#0f172a}
+    .auto-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:6px 0;border-bottom:1px solid #f1f5f9}
+    .auto-row:last-child{border:none}
+    .auto-row .lbl{color:#64748b}
+    .auto-row .val{font-weight:600;color:#0f172a}
+    .badge-on{background:#dcfce7;color:#166534;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:700}
+    .badge-sat{background:#fef9c3;color:#854d0e;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:700}
+
+    /* articles table */
+    .card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden}
+    .card-head{padding:14px 20px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center}
+    .card-head h2{font-size:15px;font-weight:700}
+    .card-head span{font-size:13px;color:#64748b}
+    table{width:100%;border-collapse:collapse}
+    th{text-align:left;padding:10px 16px;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #f1f5f9;background:#f8fafc}
+    td{padding:13px 16px;border-bottom:1px solid #f8fafc;font-size:13px;vertical-align:middle}
+    tr:last-child td{border:none}
+    tr:hover td{background:#fafbff}
+    .art-title{font-weight:600;color:#0f172a;margin-bottom:3px}
+    .art-desc{font-size:12px;color:#94a3b8;line-height:1.4}
+    .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+    .tag-blog{background:#ede9fe;color:#5b21b6}
+    .tag-guide{background:#e0f2fe;color:#075985}
+    .act{display:flex;gap:10px}
+    .act a{font-size:12px;font-weight:600;text-decoration:none;padding:4px 10px;border-radius:6px;transition:background .15s}
+    .act a.live{background:#f1f5f9;color:#374151}
+    .act a.live:hover{background:#e2e8f0}
+    .act a.gh{background:#f1f5f9;color:#374151}
+    .act a.gh:hover{background:#e2e8f0}
+
+    .loading{padding:40px;text-align:center;color:#94a3b8;font-size:14px}
+    footer{text-align:center;color:#94a3b8;font-size:12px;margin:24px 0 40px}
+
+    @media(max-width:700px){
+      .stats{grid-template-columns:1fr 1fr}
+      .auto-grid{grid-template-columns:1fr}
+      .card-head,.act{flex-direction:column;gap:6px}
+      th:nth-child(3),td:nth-child(3),th:nth-child(4),td:nth-child(4){display:none}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LOGIN SCREEN ── -->
+<div id="login">
+  <div class="login-card">
+    <div class="login-logo">★</div>
+    <h1>TechForDad Admin</h1>
+    <p>Enter your password to continue</p>
+    <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password"/>
+    <button id="login-btn">Sign In</button>
+    <div class="login-error" id="login-error">Incorrect password. Try again.</div>
+  </div>
+</div>
+
+<!-- ── DASHBOARD ── -->
+<div id="dashboard">
+  <header>
+    <div class="h-left">
+      <span class="h-logo">★ TechForDad</span>
+      <span class="h-badge">ADMIN</span>
+    </div>
+    <div class="h-right">
+      <a href="https://www.techfordad.com" target="_blank">↗ Live Site</a>
+      <button id="logout-btn">Sign out</button>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat"><div class="num" id="stat-total">—</div><div class="lbl">Total pages</div></div>
+      <div class="stat"><div class="num" id="stat-blogs">—</div><div class="lbl">Blog posts</div></div>
+      <div class="stat"><div class="num" id="stat-guides">—</div><div class="lbl">Guides</div></div>
+      <div class="stat"><div class="num" id="stat-sitemap">—</div><div class="lbl">In sitemap</div></div>
+    </div>
+
+    <!-- Quick links -->
+    <div class="quick-links">
+      <a class="ql" href="https://adsense.google.com" target="_blank">💰 AdSense</a>
+      <a class="ql" href="https://analytics.google.com" target="_blank">📊 Analytics</a>
+      <a class="ql" href="https://search.google.com/search-console" target="_blank">🔍 Search Console</a>
+      <a class="ql" href="https://github.com/abhikarmaker/techfordad-blog/commits/main" target="_blank">⚙ GitHub Commits</a>
+      <a class="ql" href="https://github.com/abhikarmaker/techfordad-blog/actions" target="_blank">🤖 GitHub Actions</a>
+      <a class="ql" href="https://claude.ai/code/routines" target="_blank">🗓 Claude Routines</a>
+      <a class="ql" href="https://us2.admin.mailchimp.com" target="_blank">✉ Mailchimp</a>
+    </div>
+
+    <!-- Automations -->
+    <div class="auto-grid">
+      <div class="auto-card">
+        <h3>🤖 Cloud Routines (Claude)</h3>
+        <div class="auto-row"><span class="lbl">Article Creator</span><span class="val">Every Wednesday 8am UTC <span class="badge-on">ON</span></span></div>
+        <div class="auto-row"><span class="lbl">Content Auditor</span><span class="val">Every Saturday 8am UTC <span class="badge-on">ON</span></span></div>
+        <div class="auto-row"><span class="lbl">Manage routines</span><span class="val"><a href="https://claude.ai/code/routines" target="_blank" style="color:#4f46e5;text-decoration:none">claude.ai/code/routines →</a></span></div>
+      </div>
+      <div class="auto-card">
+        <h3>⚙ GitHub Actions</h3>
+        <div class="auto-row"><span class="lbl">Auto Price Updater</span><span class="val">Every Saturday 9am UTC <span class="badge-on">ON</span></span></div>
+        <div class="auto-row"><span class="lbl">Weekly Price Checklist</span><span class="val">Every Saturday 8am UTC <span class="badge-sat">ISSUE</span></span></div>
+        <div class="auto-row"><span class="lbl">View runs</span><span class="val"><a href="https://github.com/abhikarmaker/techfordad-blog/actions" target="_blank" style="color:#4f46e5;text-decoration:none">GitHub Actions →</a></span></div>
+      </div>
+    </div>
+
+    <!-- Articles table -->
+    <div class="card">
+      <div class="card-head">
+        <h2>All Content</h2>
+        <span id="article-count">Loading…</span>
+      </div>
+      <div id="articles-body"><div class="loading">Loading articles…</div></div>
+    </div>
+
+  </div>
+  <footer>TechForDad Admin · Private · <a href="https://www.techfordad.com" target="_blank" style="color:#94a3b8">techfordad.com</a></footer>
+</div>
+
+<script>
+  const HASH = 'a4bfebb818a1e7188ca8a644eccd147473c53a1a1b58be46abbc69f480e38322';
+  const SESSION_KEY = 'tfd_admin_auth';
+  const SESSION_TTL = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  function isAuthenticated() {
+    try {
+      const s = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+      return s.token === HASH && Date.now() < s.expires;
+    } catch { return false; }
+  }
+
+  function saveSession() {
+    localStorage.setItem(SESSION_KEY, JSON.stringify({ token: HASH, expires: Date.now() + SESSION_TTL }));
+  }
+
+  function showDashboard() {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadArticles();
+  }
+
+  async function tryLogin() {
+    const pw = document.getElementById('pw-input').value;
+    const err = document.getElementById('login-error');
+    if (!pw) return;
+    const h = await sha256(pw);
+    if (h === HASH) {
+      saveSession();
+      showDashboard();
+    } else {
+      err.style.display = 'block';
+      document.getElementById('pw-input').value = '';
+      document.getElementById('pw-input').focus();
+    }
+  }
+
+  document.getElementById('login-btn').addEventListener('click', tryLogin);
+  document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    localStorage.removeItem(SESSION_KEY);
+    location.reload();
+  });
+
+  if (isAuthenticated()) showDashboard();
+
+  async function loadArticles() {
+    try {
+      // Count sitemap URLs
+      const sm = await fetch('/sitemap.xml').then(r => r.text());
+      const sitemapCount = (sm.match(/<loc>/g) || []).length;
+      document.getElementById('stat-sitemap').textContent = sitemapCount;
+
+      // Fetch blog index
+      const blogHtml = await fetch('/blog/index.html').then(r => r.text());
+      const parser = new DOMParser();
+      const blogDoc = parser.parseFromString(blogHtml, 'text/html');
+      const blogCards = blogDoc.querySelectorAll('.card');
+
+      // Fetch guides index
+      const guidesHtml = await fetch('/guides/index.html').then(r => r.text());
+      const guidesDoc = parser.parseFromString(guidesHtml, 'text/html');
+      const guideLinks = guidesDoc.querySelectorAll('.about-body a[href]');
+
+      const articles = [];
+
+      blogCards.forEach(card => {
+        const titleEl = card.querySelector('h3');
+        const descEl  = card.querySelector('p');
+        const linkEl  = card.querySelector('a[href]');
+        if (!titleEl || !linkEl) return;
+        const href = linkEl.getAttribute('href');
+        articles.push({
+          title: titleEl.textContent.trim(),
+          desc:  descEl ? descEl.textContent.trim() : '',
+          type:  'Blog Post',
+          url:   'https://www.techfordad.com/blog/' + href.replace(/^.*\//, ''),
+          ghUrl: 'https://github.com/abhikarmaker/techfordad-blog/blob/main/blog/' + href.replace(/^.*\//, ''),
+        });
+      });
+
+      const guideSet = new Set();
+      guideLinks.forEach(a => {
+        const href = a.getAttribute('href');
+        if (!href || href.startsWith('..') || href.startsWith('http') || guideSet.has(href)) return;
+        guideSet.add(href);
+        const h2 = a.querySelector('h2');
+        const p  = a.querySelector('p');
+        if (!h2) return;
+        const slug = href.replace('.html','');
+        articles.push({
+          title: h2.textContent.trim(),
+          desc:  p ? p.textContent.trim() : '',
+          type:  'Guide',
+          url:   'https://www.techfordad.com/guides/' + slug + '.html',
+          ghUrl: 'https://github.com/abhikarmaker/techfordad-blog/blob/main/guides/' + slug + '.html',
+        });
+      });
+
+      const blogs  = articles.filter(a => a.type === 'Blog Post').length;
+      const guides = articles.filter(a => a.type === 'Guide').length;
+      document.getElementById('stat-total').textContent = articles.length;
+      document.getElementById('stat-blogs').textContent = blogs;
+      document.getElementById('stat-guides').textContent = guides;
+      document.getElementById('article-count').textContent = articles.length + ' items';
+
+      const rows = articles.map(a => `
+        <tr>
+          <td>
+            <div class="art-title">${a.title}</div>
+            <div class="art-desc">${a.desc.slice(0,120)}${a.desc.length > 120 ? '…' : ''}</div>
+          </td>
+          <td><span class="tag ${a.type === 'Blog Post' ? 'tag-blog' : 'tag-guide'}">${a.type}</span></td>
+          <td style="white-space:nowrap">
+            <div class="act">
+              <a class="live" href="${a.url}" target="_blank">↗ Live</a>
+              <a class="gh" href="${a.ghUrl}" target="_blank">⚙ GitHub</a>
+            </div>
+          </td>
+        </tr>`).join('');
+
+      document.getElementById('articles-body').innerHTML =
+        `<table><thead><tr><th>Title</th><th>Type</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
+    } catch(e) {
+      document.getElementById('articles-body').innerHTML =
+        `<div class="loading">Could not load articles — ${e.message}</div>`;
+    }
+  }
+</script>
+</body>
+</html>
