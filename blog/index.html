@@ -73,9 +73,16 @@
 
 <section>
   <div class="section-inner">
+
+    <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap">
+      <button class="country-btn active" data-country="all" onclick="filterCountry('all')">🌎 All</button>
+      <button class="country-btn" data-country="us" onclick="filterCountry('us')">🇺🇸 USA</button>
+      <button class="country-btn" data-country="ca" onclick="filterCountry('ca')">🇨🇦 Canada</button>
+    </div>
+
     <div class="cards-grid">
 
-      <div class="card">
+      <div class="card" data-country="us">
         <div class="card-img blue">🆘</div>
         <div class="card-body">
           <span class="card-tag">Medical Alert Systems</span>
@@ -85,7 +92,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-country="us">
         <div class="card-img green">📱</div>
         <div class="card-body">
           <span class="card-tag">Senior Phones</span>
@@ -95,7 +102,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-country="us">
         <div class="card-img amber">💻</div>
         <div class="card-body">
           <span class="card-tag">Tablets</span>
@@ -105,7 +112,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-country="us">
         <div class="card-img" style="background:#e0f2fe;">📍</div>
         <div class="card-body">
           <span class="card-tag">GPS Trackers</span>
@@ -115,7 +122,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-country="us">
         <div class="card-img" style="background:#fef2f2;">❤️</div>
         <div class="card-body">
           <span class="card-tag">Blood Pressure Monitors</span>
@@ -125,7 +132,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-country="us">
         <div class="card-img" style="background:linear-gradient(135deg,#fef2f2,#fee2e2);">⚖️</div>
         <div class="card-body">
           <span class="card-tag">Comparison</span>
@@ -135,7 +142,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-country="us">
         <div class="card-img" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);">🆘</div>
         <div class="card-body">
           <span class="card-tag">Medical Alert Systems</span>
@@ -145,7 +152,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-country="us">
         <div class="card-img" style="background:linear-gradient(135deg,#f0f9ff,#e0f2fe);">💻</div>
         <div class="card-body">
           <span class="card-tag">How-To Guide</span>
@@ -155,7 +162,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-country="us">
         <div class="card-img" style="background:linear-gradient(135deg,#faf5ff,#ede9fe);">📱</div>
         <div class="card-body">
           <span class="card-tag">Comparison</span>
@@ -165,7 +172,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-country="us">
         <div class="card-img" style="background:linear-gradient(135deg,#fff7ed,#ffedd5);">👂</div>
         <div class="card-body">
           <span class="card-tag">Hearing Aids</span>
@@ -175,7 +182,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-country="us">
         <div class="card-img" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);">🏠</div>
         <div class="card-body">
           <span class="card-tag">Smart Home</span>
@@ -185,13 +192,23 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-country="us">
         <div class="card-img" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);">⌚</div>
         <div class="card-body">
           <span class="card-tag">Smartwatches</span>
           <h3>Best Smartwatches for Seniors 2026 — Fall Detection, ECG &amp; Easy to Use</h3>
           <p>Apple Watch vs Samsung Galaxy Watch vs dedicated medical alert watches — we explain which one is right for your parent's situation and budget.</p>
           <a href="best-smartwatches-for-seniors.html" class="card-link">Read full guide</a>
+        </div>
+      </div>
+
+      <div class="card" data-country="ca">
+        <div class="card-img blue">🇨🇦</div>
+        <div class="card-body">
+          <span class="card-tag">Canada · Medical Alert Systems</span>
+          <h3>Best Medical Alert Systems in Canada 2026 — Reviewed &amp; Ranked</h3>
+          <p>MedicAlert, Telus LivingWell, Lifeline, and more — compared with Canadian pricing in CAD and provincial subsidy information.</p>
+          <a href="best-medical-alert-systems-canada.html" class="card-link">Read full guide</a>
         </div>
       </div>
 
@@ -248,5 +265,18 @@
 </footer>
 
 <script src="../js/main.js" defer></script>
+<style>
+.country-btn{padding:8px 18px;border-radius:20px;border:2px solid #e2e8f0;background:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;color:#374151}
+.country-btn:hover{border-color:#1B3A6B;color:#1B3A6B}
+.country-btn.active{background:#1B3A6B;color:#fff;border-color:#1B3A6B}
+</style>
+<script>
+function filterCountry(country){
+  document.querySelectorAll('.country-btn').forEach(b=>b.classList.toggle('active',b.dataset.country===country));
+  document.querySelectorAll('.card[data-country]').forEach(card=>{
+    card.style.display=(country==='all'||card.dataset.country===country)?'':'none';
+  });
+}
+</script>
 </body>
 </html>
