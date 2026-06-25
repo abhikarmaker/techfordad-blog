@@ -3,117 +3,321 @@
     "article": "Best Medical Alert Systems",
     "file": "blog/best-medical-alert-systems.html",
     "products": [
-      { "name": "Medical Guardian MGHome Cellular", "price": "$34.95/mo", "check_url": "https://www.medicalguardian.com" },
-      { "name": "Bay Alarm Medical SOS Mobile", "price": "$27.95/mo", "check_url": "https://www.bayalarmmedical.com" },
-      { "name": "Lively Mobile Plus", "price": "$24.99/mo", "check_url": "https://www.lively.com" },
-      { "name": "Apple Watch SE", "price": "$249", "check_url": "https://www.apple.com/apple-watch/" },
-      { "name": "Medical Alert Classic", "price": "$19.95/mo", "check_url": "https://www.medicalalert.com" }
+      {
+        "name": "Medical Guardian MGHome Cellular",
+        "price": "$34.95/mo",
+        "check_url": "https://www.medicalguardian.com"
+      },
+      {
+        "name": "Bay Alarm Medical SOS Mobile",
+        "price": "$27.95/mo",
+        "check_url": "https://www.bayalarmmedical.com"
+      },
+      {
+        "name": "Lively Mobile Plus",
+        "price": "$24.99/mo",
+        "check_url": "https://www.lively.com"
+      },
+      {
+        "name": "Apple Watch SE",
+        "price": "$249",
+        "check_url": "https://www.apple.com/apple-watch/"
+      },
+      {
+        "name": "Medical Alert Classic",
+        "price": "$19.95/mo",
+        "check_url": "https://www.medicalalert.com"
+      }
     ]
   },
   {
     "article": "Life Alert vs Medical Guardian",
     "file": "blog/life-alert-vs-medical-guardian.html",
     "products": [
-      { "name": "Life Alert Home (base plan)", "price": "$29.95/mo", "check_url": "https://www.lifealert.com" },
-      { "name": "Life Alert Help + 3-button", "price": "$49.95/mo", "check_url": "https://www.lifealert.com" },
-      { "name": "Medical Guardian MGHome Cellular", "price": "$34.95/mo", "check_url": "https://www.medicalguardian.com" }
+      {
+        "name": "Life Alert Home (base plan)",
+        "price": "$29.95/mo",
+        "check_url": "https://www.lifealert.com"
+      },
+      {
+        "name": "Life Alert Help + 3-button",
+        "price": "$49.95/mo",
+        "check_url": "https://www.lifealert.com"
+      },
+      {
+        "name": "Medical Guardian MGHome Cellular",
+        "price": "$34.95/mo",
+        "check_url": "https://www.medicalguardian.com"
+      }
     ]
   },
   {
     "article": "Medical Alert No Monthly Fee",
     "file": "blog/medical-alert-no-monthly-fee.html",
     "products": [
-      { "name": "Apple Watch SE", "price": "$249", "check_url": "https://www.apple.com/apple-watch/" },
-      { "name": "Medical Alert Classic", "price": "$19.95/mo", "check_url": "https://www.medicalalert.com" },
-      { "name": "Lively Mobile Plus", "price": "$24.99/mo", "check_url": "https://www.lively.com" },
-      { "name": "Bay Alarm Medical SOS Mobile", "price": "$27.95/mo", "check_url": "https://www.bayalarmmedical.com" }
+      {
+        "name": "Apple Watch SE",
+        "price": "$249",
+        "check_url": "https://www.apple.com/apple-watch/"
+      },
+      {
+        "name": "Medical Alert Classic",
+        "price": "$19.95/mo",
+        "check_url": "https://www.medicalalert.com"
+      },
+      {
+        "name": "Lively Mobile Plus",
+        "price": "$24.99/mo",
+        "check_url": "https://www.lively.com"
+      },
+      {
+        "name": "Bay Alarm Medical SOS Mobile",
+        "price": "$27.95/mo",
+        "check_url": "https://www.bayalarmmedical.com"
+      }
     ]
   },
   {
     "article": "Best Cell Phones for Seniors",
     "file": "blog/best-cell-phones-for-seniors.html",
     "products": [
-      { "name": "Jitterbug Flip2 by Lively", "price": "$99.99", "check_url": "https://www.lively.com" },
-      { "name": "Apple iPhone SE (4th Gen, 2025)", "price": "$429", "check_url": "https://www.apple.com/iphone/" },
-      { "name": "Jitterbug Smart3", "price": "$149.99", "check_url": "https://www.lively.com" },
-      { "name": "Doro 7050", "price": "$49.99", "check_url": "https://www.amazon.com/s?k=Doro+7050+senior+phone" },
-      { "name": "Samsung Galaxy A16", "price": "$199", "check_url": "https://www.amazon.com/s?k=Samsung+Galaxy+A16" }
+      {
+        "name": "Jitterbug Flip2 by Lively",
+        "price": "$99.99",
+        "check_url": "https://www.lively.com"
+      },
+      {
+        "name": "Apple iPhone SE (4th Gen, 2025)",
+        "price": "$429",
+        "check_url": "https://www.apple.com/iphone/"
+      },
+      {
+        "name": "Jitterbug Smart3",
+        "price": "$149.99",
+        "check_url": "https://www.lively.com"
+      },
+      {
+        "name": "Doro 7050",
+        "price": "$49.99",
+        "check_url": "https://www.amazon.com/s?k=Doro+7050+senior+phone"
+      },
+      {
+        "name": "Samsung Galaxy A16",
+        "price": "$199",
+        "check_url": "https://www.amazon.com/s?k=Samsung+Galaxy+A16"
+      }
     ]
   },
   {
     "article": "Jitterbug vs iPhone for Seniors",
     "file": "blog/jitterbug-vs-iphone-for-seniors.html",
     "products": [
-      { "name": "Jitterbug Flip2", "price": "$99", "check_url": "https://www.lively.com" },
-      { "name": "Jitterbug Smart4", "price": "$149", "check_url": "https://www.lively.com" },
-      { "name": "iPhone SE 4", "price": "$429", "check_url": "https://www.apple.com/iphone/" },
-      { "name": "Lively Preferred plan", "price": "$19.99/mo", "check_url": "https://www.lively.com" },
-      { "name": "Consumer Cellular entry plan", "price": "$20/mo", "check_url": "https://www.consumercellular.com" }
+      {
+        "name": "Jitterbug Flip2",
+        "price": "$99",
+        "check_url": "https://www.lively.com"
+      },
+      {
+        "name": "Jitterbug Smart4",
+        "price": "$149",
+        "check_url": "https://www.lively.com"
+      },
+      {
+        "name": "iPhone SE 4",
+        "price": "$429",
+        "check_url": "https://www.apple.com/iphone/"
+      },
+      {
+        "name": "Lively Preferred plan",
+        "price": "$19.99/mo",
+        "check_url": "https://www.lively.com"
+      },
+      {
+        "name": "Consumer Cellular entry plan",
+        "price": "$20/mo",
+        "check_url": "https://www.consumercellular.com"
+      }
     ]
   },
   {
     "article": "Best Tablets for Seniors",
     "file": "blog/best-tablets-for-seniors.html",
     "products": [
-      { "name": "Apple iPad 11th Gen (M3)", "price": "$349", "check_url": "https://www.apple.com/ipad/" },
-      { "name": "Amazon Fire HD 10", "price": "$139.99", "check_url": "https://www.amazon.com/s?k=Amazon+Fire+HD+10+tablet" },
-      { "name": "Apple iPad Mini 7th Gen", "price": "$499", "check_url": "https://www.apple.com/ipad/" },
-      { "name": "Samsung Galaxy Tab A9+", "price": "$219", "check_url": "https://www.amazon.com/s?k=Samsung+Galaxy+Tab+A9+" },
-      { "name": "Amazon Fire HD 8", "price": "$99.99", "check_url": "https://www.amazon.com/s?k=Amazon+Fire+HD+8+tablet" }
+      {
+        "name": "Apple iPad 11th Gen (M3)",
+        "price": "$349",
+        "check_url": "https://www.apple.com/ipad/"
+      },
+      {
+        "name": "Amazon Fire HD 10",
+        "price": "$139.99",
+        "check_url": "https://www.amazon.com/s?k=Amazon+Fire+HD+10+tablet"
+      },
+      {
+        "name": "Apple iPad Mini 7th Gen",
+        "price": "$499",
+        "check_url": "https://www.apple.com/ipad/"
+      },
+      {
+        "name": "Samsung Galaxy Tab A9+",
+        "price": "$219",
+        "check_url": "https://www.amazon.com/s?k=Samsung+Galaxy+Tab+A9+"
+      },
+      {
+        "name": "Amazon Fire HD 8",
+        "price": "$99.99",
+        "check_url": "https://www.amazon.com/s?k=Amazon+Fire+HD+8+tablet"
+      }
     ]
   },
   {
     "article": "iPad Setup Guide (iPad prices)",
     "file": "blog/how-to-set-up-ipad-for-elderly-parent.html",
     "products": [
-      { "name": "Apple iPad (base, 11th Gen)", "price": "$329", "check_url": "https://www.apple.com/ipad/" },
-      { "name": "Apple iPad Pro", "price": "$999+", "check_url": "https://www.apple.com/ipad/" },
-      { "name": "Apple iPad Mini", "price": "$499", "check_url": "https://www.apple.com/ipad/" }
+      {
+        "name": "Apple iPad (base, 11th Gen)",
+        "price": "$329",
+        "check_url": "https://www.apple.com/ipad/"
+      },
+      {
+        "name": "Apple iPad Pro",
+        "price": "$999+",
+        "check_url": "https://www.apple.com/ipad/"
+      },
+      {
+        "name": "Apple iPad Mini",
+        "price": "$499",
+        "check_url": "https://www.apple.com/ipad/"
+      }
     ]
   },
   {
     "article": "Best GPS Trackers for Seniors",
     "file": "blog/best-gps-trackers-for-seniors.html",
     "products": [
-      { "name": "AngelSense GPS + plan", "price": "$39.99/mo", "check_url": "https://www.angelsense.com" },
-      { "name": "Jiobit Smart Tag + plan", "price": "$8.99/mo", "check_url": "https://www.amazon.com/s?k=Jiobit+smart+tag" },
-      { "name": "Tracki GPS Tracker", "price": "$19.99 + $14.99/mo", "check_url": "https://www.amazon.com/s?k=Tracki+GPS+tracker" },
-      { "name": "Apple AirTag 2", "price": "$29–$99", "check_url": "https://www.apple.com/airtag/" },
-      { "name": "LandAirSea 54", "price": "$39.99 + plan", "check_url": "https://www.amazon.com/s?k=LandAirSea+54+GPS" }
+      {
+        "name": "AngelSense GPS + plan",
+        "price": "$39.99/mo",
+        "check_url": "https://www.angelsense.com"
+      },
+      {
+        "name": "Jiobit Smart Tag + plan",
+        "price": "$8.99/mo",
+        "check_url": "https://www.amazon.com/s?k=Jiobit+smart+tag"
+      },
+      {
+        "name": "Tracki GPS Tracker",
+        "price": "$19.99 + $14.99/mo",
+        "check_url": "https://www.amazon.com/s?k=Tracki+GPS+tracker"
+      },
+      {
+        "name": "Apple AirTag 2",
+        "price": "$29\u2013$99",
+        "check_url": "https://www.apple.com/airtag/"
+      },
+      {
+        "name": "LandAirSea 54",
+        "price": "$39.99 + plan",
+        "check_url": "https://www.amazon.com/s?k=LandAirSea+54+GPS"
+      }
     ]
   },
   {
     "article": "Best Blood Pressure Monitors",
     "file": "blog/best-blood-pressure-monitors-for-seniors.html",
     "products": [
-      { "name": "Omron Platinum BP5450", "price": "$79", "check_url": "https://www.amazon.com/s?k=Omron+Platinum+BP5450" },
-      { "name": "Omron Gold BP5350", "price": "$59", "check_url": "https://www.amazon.com/s?k=Omron+Gold+BP5350" },
-      { "name": "Withings BPM Connect", "price": "$99", "check_url": "https://www.amazon.com/s?k=Withings+BPM+Connect" },
-      { "name": "Omron 3 Series BP7100", "price": "$35", "check_url": "https://www.amazon.com/s?k=Omron+3+Series+BP7100" },
-      { "name": "Greater Goods 0602", "price": "$39", "check_url": "https://www.amazon.com/s?k=Greater+Goods+0602+blood+pressure" }
+      {
+        "name": "Omron Platinum BP5450",
+        "price": "$79",
+        "check_url": "https://www.amazon.com/s?k=Omron+Platinum+BP5450"
+      },
+      {
+        "name": "Omron Gold BP5350",
+        "price": "$59",
+        "check_url": "https://www.amazon.com/s?k=Omron+Gold+BP5350"
+      },
+      {
+        "name": "Withings BPM Connect",
+        "price": "$99",
+        "check_url": "https://www.amazon.com/s?k=Withings+BPM+Connect"
+      },
+      {
+        "name": "Omron 3 Series BP7100",
+        "price": "$35",
+        "check_url": "https://www.amazon.com/s?k=Omron+3+Series+BP7100"
+      },
+      {
+        "name": "Greater Goods 0602",
+        "price": "$39",
+        "check_url": "https://www.amazon.com/s?k=Greater+Goods+0602+blood+pressure"
+      }
     ]
   },
   {
     "article": "Best Hearing Aids for Seniors",
     "file": "blog/best-hearing-aids-for-seniors.html",
     "products": [
-      { "name": "Sony CRE-10 OTC", "price": "$999", "check_url": "https://www.amazon.com/s?k=Sony+CRE-10+hearing+aid" },
-      { "name": "Jabra Enhance Select 300", "price": "$799", "check_url": "https://www.jabra.com" },
-      { "name": "Lexie B2 Plus (Bose)", "price": "$799", "check_url": "https://www.lexiehearing.com" },
-      { "name": "Audien Atom Pro", "price": "$299", "check_url": "https://www.audienear.com" },
-      { "name": "Eargo 7", "price": "$1,950", "check_url": "https://www.eargo.com" }
+      {
+        "name": "Sony CRE-10 OTC",
+        "price": "$999",
+        "check_url": "https://www.amazon.com/s?k=Sony+CRE-10+hearing+aid"
+      },
+      {
+        "name": "Jabra Enhance Select 300",
+        "price": "$799",
+        "check_url": "https://www.jabra.com"
+      },
+      {
+        "name": "Lexie B2 Plus (Bose)",
+        "price": "$799",
+        "check_url": "https://www.lexiehearing.com"
+      },
+      {
+        "name": "Audien Atom Pro",
+        "price": "$299",
+        "check_url": "https://www.audienear.com"
+      },
+      {
+        "name": "Eargo 7",
+        "price": "$1,950",
+        "check_url": "https://www.eargo.com"
+      }
     ]
   },
   {
     "article": "Best Smart Home Devices for Seniors",
     "file": "blog/best-smart-home-devices-for-seniors.html",
     "products": [
-      { "name": "Amazon Echo Show 8 (3rd Gen)", "price": "$149", "check_url": "https://www.amazon.com/s?k=Echo+Show+8+3rd+gen" },
-      { "name": "Ring Video Doorbell (4th Gen)", "price": "$99", "check_url": "https://www.amazon.com/s?k=Ring+Video+Doorbell+4th+gen" },
-      { "name": "Google Nest Learning Thermostat", "price": "$249", "check_url": "https://www.amazon.com/s?k=Google+Nest+Learning+Thermostat" },
-      { "name": "Amazon Alexa Together (plan)", "price": "$19.99/mo", "check_url": "https://www.amazon.com/s?k=Alexa+Together" },
-      { "name": "Schlage Encode Smart Lock", "price": "$249", "check_url": "https://www.amazon.com/s?k=Schlage+Encode+Smart+Lock" },
-      { "name": "iRobot Roomba i3+", "price": "$349", "check_url": "https://www.amazon.com/s?k=iRobot+Roomba+i3+" }
+      {
+        "name": "Amazon Echo Show 8 (3rd Gen)",
+        "price": "$149",
+        "check_url": "https://www.amazon.com/s?k=Echo+Show+8+3rd+gen"
+      },
+      {
+        "name": "Ring Video Doorbell (4th Gen)",
+        "price": "$99",
+        "check_url": "https://www.amazon.com/s?k=Ring+Video+Doorbell+4th+gen"
+      },
+      {
+        "name": "Google Nest Learning Thermostat",
+        "price": "$249",
+        "check_url": "https://www.amazon.com/s?k=Google+Nest+Learning+Thermostat"
+      },
+      {
+        "name": "Amazon Alexa Together (plan)",
+        "price": "$19.99/mo",
+        "check_url": "https://www.amazon.com/s?k=Alexa+Together"
+      },
+      {
+        "name": "Schlage Encode Smart Lock",
+        "price": "$249",
+        "check_url": "https://www.amazon.com/s?k=Schlage+Encode+Smart+Lock"
+      },
+      {
+        "name": "iRobot Roomba i3+",
+        "price": "$349",
+        "check_url": "https://www.amazon.com/s?k=iRobot+Roomba+i3+"
+      }
     ]
   }
 ]
