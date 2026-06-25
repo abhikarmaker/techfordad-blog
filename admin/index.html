@@ -408,14 +408,14 @@ function initDashboard(){
 }
 
 // ── overview ──
-async function loadOverview(){
-  try{
-    const[commits,sm]=await Promise.all([
-      ghGet('/commits?per_page=8'),
-      fetch('/sitemap.xml').then(r=>r.text()),
-    ]);
+function loadOverview(){
+  // Sitemap count — no token needed
+  fetch('/sitemap.xml').then(r=>r.text()).then(sm=>{
     document.getElementById('s-sitemap').textContent=(sm.match(/<loc>/g)||[]).length;
+  }).catch(()=>{document.getElementById('s-sitemap').textContent='?';});
 
+  // Recent commits — needs token
+  ghGet('/commits?per_page=8').then(commits=>{
     document.getElementById('recent-commits').innerHTML=commits.map(c=>`
       <div class="commit-item">
         <div class="commit-msg">${c.commit.message.split('\n')[0].slice(0,72)}</div>
@@ -424,7 +424,9 @@ async function loadOverview(){
           · ${c.commit.author.name} · ${new Date(c.commit.author.date).toLocaleDateString()}
         </div>
       </div>`).join('');
-  }catch(e){document.getElementById('recent-commits').innerHTML='<div class="loading-text">'+e.message+'</div>';}
+  }).catch(()=>{
+    document.getElementById('recent-commits').innerHTML='<div class="loading-text" style="color:#d97706">⚠ GitHub token needed to show commits</div>';
+  });
 }
 
 // ── prices ──
@@ -439,7 +441,7 @@ async function loadPrices(){
     productsJson.forEach((a,ai)=>a.products.forEach((p,pi)=>{originalPrices[ai+'-'+pi]=p.price}));
     renderPriceGrid();
     document.getElementById('price-status').textContent='Loaded from GitHub';
-  }catch(e){document.getElementById('price-grid').innerHTML='<div class="loading-text">'+e.message+'</div>';}
+  }catch(e){document.getElementById('price-grid').innerHTML='<div class="loading-text" style="color:#d97706">⚠ Could not load prices — make sure your GitHub token has <strong>Contents: read</strong> permission</div>';}
 }
 
 function renderPriceGrid(){
@@ -527,7 +529,7 @@ async function loadArticles(){
     ]);
     const parser = new DOMParser();
 
-    function parseCards(html, type, dir){
+    function parseBlogCards(html){
       const doc = parser.parseFromString(html, 'text/html');
       return [...doc.querySelectorAll('.card')].map(card=>{
         const link = card.querySelector('a.card-link');
@@ -536,13 +538,29 @@ async function loadArticles(){
         return {
           title: card.querySelector('h3')?.textContent.trim()||'',
           desc:  card.querySelector('p')?.textContent.trim()||'',
-          filename, dir, type,
-          path: dir+'/'+filename,
+          filename, dir:'blog', type:'Blog Post',
+          path: 'blog/'+filename,
         };
       }).filter(a=>a.filename&&a.filename.endsWith('.html')&&a.filename!=='index.html');
     }
 
-    const all = [...parseCards(blogHtml,'Blog Post','blog'), ...parseCards(guidesHtml,'Guide','guides')];
+    function parseGuideCards(html){
+      const doc = parser.parseFromString(html, 'text/html');
+      // guides/index.html uses <a href="..."><h2>...</h2><p>...</p></a> (no .card class)
+      return [...doc.querySelectorAll('a[href$=".html"] h2')].map(h2=>{
+        const a = h2.closest('a');
+        const href = a?.getAttribute('href')||'';
+        const filename = href.split('/').pop();
+        return {
+          title: h2.textContent.trim(),
+          desc:  a?.querySelector('p')?.textContent.trim()||'',
+          filename, dir:'guides', type:'Guide',
+          path: 'guides/'+filename,
+        };
+      }).filter(a=>a.filename&&a.filename.endsWith('.html')&&a.filename!=='index.html');
+    }
+
+    const all = [...parseBlogCards(blogHtml), ...parseGuideCards(guidesHtml)];
     document.getElementById('article-count').textContent = all.length+' items';
     // update overview stats
     document.getElementById('s-blogs').textContent=all.filter(a=>a.type==='Blog Post').length;
@@ -653,7 +671,7 @@ async function loadWorkflowRuns(){
           <td><a href="${r.html_url}" target="_blank" style="color:#4f46e5;font-size:12px;font-weight:600">View →</a></td>
         </tr>`;
       }).join('')+'</tbody></table>';
-  }catch(e){document.getElementById('workflow-runs').innerHTML='<div class="loading-text">'+e.message+'</div>';}
+  }catch(e){document.getElementById('workflow-runs').innerHTML='<div class="loading-text" style="color:#d97706">⚠ GitHub token needed to show workflow runs — make sure it has <strong>Actions: read</strong> permission</div>';}
 }
 </script>
 </body>
