@@ -66,14 +66,28 @@
     /* ── price editor ── */
     .price-group{margin-bottom:24px}
     .price-group h3{font-size:13px;font-weight:700;color:#1B3A6B;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e2e8f0}
-    .price-row{display:grid;grid-template-columns:1fr 140px 140px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid #f8fafc}
+    .price-row{display:grid;grid-template-columns:1fr 190px 110px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid #f8fafc}
     .price-row:last-child{border:none}
     .price-name{font-size:13px;font-weight:500;color:#374151}
-    .price-input{padding:7px 12px;border:2px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:monospace;outline:none;transition:border-color .2s;width:100%}
+    .price-input-wrap{display:flex;gap:6px;align-items:center}
+    .price-input{padding:7px 12px;border:2px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:monospace;outline:none;transition:border-color .2s;flex:1;min-width:0}
     .price-input:focus{border-color:#1B3A6B}
     .price-input.changed{border-color:#d97706;background:#fffbeb}
+    .price-input.fetched{border-color:#16a34a;background:#f0fdf4}
+    .btn-fetch{background:none;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;cursor:pointer;font-size:14px;transition:all .15s;flex-shrink:0}
+    .btn-fetch:hover{border-color:#4f46e5;background:#f5f3ff}
+    .btn-fetch:disabled{opacity:.4;cursor:not-allowed}
     .price-check-link{font-size:12px;color:#4f46e5;text-decoration:none;font-weight:600}
     .price-check-link:hover{text-decoration:underline}
+    /* ── settings modal ── */
+    #settings-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:24px}
+    #settings-modal.open{display:flex}
+    .settings-box{background:#fff;border-radius:14px;width:100%;max-width:480px;padding:28px 32px}
+    .settings-box h2{font-size:16px;font-weight:800;margin-bottom:20px}
+    .settings-field{margin-bottom:16px}
+    .settings-field label{display:block;font-size:12px;font-weight:600;color:#64748b;margin-bottom:5px}
+    .settings-field input{width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:monospace;outline:none;transition:border-color .2s}
+    .settings-field input:focus{border-color:#1B3A6B}
     /* ── article editor ── */
     .article-list-item{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #f8fafc;gap:10px}
     .article-list-item:last-child{border:none}
@@ -147,6 +161,11 @@
       Create one at <strong>github.com → Settings → Developer settings → Personal access tokens → Fine-grained tokens</strong><br>
       Permissions needed: <strong>Contents</strong> (read &amp; write) + <strong>Actions</strong> (write)
     </p>
+    <label style="margin-top:16px">Anthropic API Key <span style="color:#94a3b8;font-weight:400">(for live price fetching)</span></label>
+    <input type="password" id="anthropic-input" placeholder="sk-ant-api03-..."/>
+    <p style="font-size:12px;color:#94a3b8;text-align:left;margin-bottom:16px;line-height:1.5">
+      Get one at <strong>console.anthropic.com → API Keys</strong> — enables the 🔍 Fetch button in Price Manager. Optional.
+    </p>
     <button class="btn btn-primary" id="pat-btn" style="width:100%;justify-content:center;padding:12px">Save &amp; Continue</button>
     <p class="auth-err hide" id="pat-err">Could not verify token. Check it and try again.</p>
   </div>
@@ -164,6 +183,7 @@
     </div>
     <div class="topbar-right">
       <a href="https://www.techfordad.com" target="_blank">↗ Live Site</a>
+      <button class="btn btn-ghost" id="settings-btn" style="padding:5px 12px;font-size:12px">⚙ Keys</button>
       <button class="btn btn-ghost" id="logout-btn" style="padding:5px 12px;font-size:12px">Sign out</button>
     </div>
   </div>
@@ -261,6 +281,25 @@
   </div>
 </div>
 
+<!-- ── SETTINGS MODAL ── -->
+<div id="settings-modal">
+  <div class="settings-box">
+    <h2>⚙ API Keys</h2>
+    <div class="settings-field">
+      <label>GitHub Personal Access Token</label>
+      <input type="password" id="s-pat" placeholder="github_pat_..."/>
+    </div>
+    <div class="settings-field">
+      <label>Anthropic API Key <span style="color:#94a3b8;font-weight:400">(enables 🔍 Fetch in Price Manager)</span></label>
+      <input type="password" id="s-anthropic" placeholder="sk-ant-api03-..."/>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+      <button class="btn btn-ghost" id="settings-cancel">Cancel</button>
+      <button class="btn btn-green" id="settings-save">Save Keys</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── ARTICLE EDITOR MODAL ── -->
 <div id="editor-panel">
   <div class="editor-modal">
@@ -320,6 +359,7 @@ function toast(msg,isErr=false){
 function getSession(){try{return JSON.parse(localStorage.getItem(SESSION_KEY)||'{}')}catch{return{}}}
 function saveSession(data){localStorage.setItem(SESSION_KEY,JSON.stringify({...getSession(),...data,expires:Date.now()+7*864e5}))}
 function getPat(){return getSession().pat||''}
+function getAnthropicKey(){return getSession().anthropicKey||''}
 function isAuthed(){const s=getSession();return s.pwok&&s.pat&&Date.now()<s.expires}
 
 // ── GitHub API ──
@@ -368,11 +408,28 @@ document.getElementById('pat-btn').onclick=async()=>{
   const r=await fetch(`https://api.github.com/repos/${OWNER}/${REPO}`,{headers:{'Authorization':'token '+pat}});
   if(!r.ok){err.classList.remove('hide');return;}
   err.classList.add('hide');
-  saveSession({pat});
+  const anthropicKey = document.getElementById('anthropic-input').value.trim();
+  saveSession({pat, anthropicKey});
   initDashboard();
 };
 
 document.getElementById('logout-btn').onclick=()=>{localStorage.removeItem(SESSION_KEY);location.reload()};
+document.getElementById('settings-btn').onclick=()=>{
+  document.getElementById('s-pat').value=getPat();
+  document.getElementById('s-anthropic').value=getAnthropicKey();
+  document.getElementById('settings-modal').classList.add('open');
+};
+document.getElementById('settings-cancel').onclick=
+document.getElementById('settings-modal').onclick=e=>{if(e.target===document.getElementById('settings-modal')||e.target===document.getElementById('settings-cancel'))document.getElementById('settings-modal').classList.remove('open')};
+document.getElementById('settings-save').onclick=()=>{
+  const pat=document.getElementById('s-pat').value.trim();
+  const anthropicKey=document.getElementById('s-anthropic').value.trim();
+  if(pat)saveSession({pat});
+  saveSession({anthropicKey});
+  document.getElementById('settings-modal').classList.remove('open');
+  toast('Keys saved');
+  loadPrices();
+};
 
 if(isAuthed())initDashboard();
 else if(getSession().pwok&&!getPat()){
@@ -452,8 +509,11 @@ function renderPriceGrid(){
       ${article.products.map((p,pi)=>`
         <div class="price-row">
           <div class="price-name">${p.name}</div>
-          <input class="price-input" data-ai="${ai}" data-pi="${pi}" value="${p.price}" placeholder="$0.00/mo"/>
-          <a class="price-check-link" href="${p.check_url}" target="_blank">↗ Check price</a>
+          <div class="price-input-wrap">
+            <input class="price-input" data-ai="${ai}" data-pi="${pi}" value="${p.price}" placeholder="$0.00/mo"/>
+            <button class="btn-fetch" data-ai="${ai}" data-pi="${pi}" title="Fetch live price with Claude AI">🔍</button>
+          </div>
+          <a class="price-check-link" href="${p.check_url}" target="_blank">↗ Verify</a>
         </div>`).join('')}
     </div>`).join('');
 
@@ -465,6 +525,9 @@ function renderPriceGrid(){
       document.getElementById('btn-save-prices').disabled=!anyChanged;
       document.getElementById('price-status').textContent=anyChanged?'Unsaved changes':'All saved';
     });
+  });
+  document.querySelectorAll('.btn-fetch').forEach(btn=>{
+    btn.addEventListener('click',()=>fetchProductPrice(+btn.dataset.ai,+btn.dataset.pi,btn));
   });
 }
 
@@ -519,6 +582,50 @@ document.getElementById('btn-run-price-updater').onclick=async()=>{
   }catch(e){toast(e.message,true);}
   btn.disabled=false; btn.innerHTML='🤖 Run Auto-Updater';
 };
+
+// ── live price fetch via Claude API ──
+async function fetchProductPrice(ai, pi, btn){
+  const key = getAnthropicKey();
+  if(!key){
+    toast('Add your Anthropic API key via ⚙ Keys in the top bar', true);
+    return;
+  }
+  const product = productsJson[ai].products[pi];
+  btn.disabled=true; btn.textContent='⏳';
+  try{
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 512,
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        system: 'You are a price-checking assistant. Search for the current retail starting price of the product at the given URL. If the site shows "as low as $X", "from $X", or "starting at $X", use that number. Reply with ONLY the price — e.g. "$34.95/mo" or "$249". No other text.',
+        messages:[{role:'user',content:`Product: ${product.name}\nURL: ${product.check_url}\nCurrently listed as: ${product.price}\n\nWhat is the current price?`}]
+      })
+    });
+    const data = await resp.json();
+    if(!resp.ok) throw new Error(data.error?.message||'Anthropic API error '+resp.status);
+    const text = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join(' ');
+    const match = text.match(/\$[\d,]+(?:\.\d{2})?(?:\/mo(?:nth)?)?/);
+    if(match){
+      const inp = document.querySelector(`.price-input[data-ai="${ai}"][data-pi="${pi}"]`);
+      inp.value = match[0];
+      inp.classList.remove('changed');
+      inp.classList.add('fetched');
+      inp.dispatchEvent(new Event('input'));
+      toast(`${product.name} → ${match[0]}`);
+    } else {
+      toast('Could not parse price from response', true);
+    }
+  }catch(e){toast(e.message,true);}
+  btn.disabled=false; btn.textContent='🔍';
+}
 
 // ── articles ──
 async function loadArticles(){
