@@ -674,15 +674,28 @@ async function loadArticles(){
     document.getElementById('s-guides').textContent=all.filter(a=>a.type==='Guide').length;
     document.getElementById('s-total').textContent=all.length;
 
-    const header=`<div style="display:grid;grid-template-columns:1fr 120px auto;gap:10px;padding:10px 18px;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #f1f5f9;background:#f8fafc"><span>TITLE</span><span>TYPE</span><span>ACTIONS</span></div>`;
-    document.getElementById('article-list').innerHTML = header + all.map(a=>`
+    renderArticleTable(all);
+    loadArticleHistory(all);
+  }catch(e){document.getElementById('article-list').innerHTML='<div class="loading-text">'+e.message+'</div>';}
+}
+
+function fmtDate(iso){return iso?new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'…'}
+function cssSafe(s){return s.replace(/[^a-zA-Z0-9]/g,'_')}
+
+function renderArticleTable(all){
+  const header=`<div style="display:grid;grid-template-columns:1fr 90px 90px 120px auto;gap:10px;padding:10px 18px;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #f1f5f9;background:#f8fafc"><span>TITLE</span><span>TYPE</span><span>CREATED</span><span>MODIFIED</span><span>ACTIONS</span></div>`;
+  document.getElementById('article-list').innerHTML = header + all.map(a=>`
       <div class="article-list-item">
         <div class="art-info" style="flex:1;min-width:0">
           <h4>${a.title}</h4>
           <p>${a.desc}</p>
+          ${a.lastCommitMsg?`<p style="margin-top:4px;font-size:11px;color:#64748b">Last change: ${a.lastCommitMsg} <button class="hist-toggle" data-path="${a.path}" data-sha="${a.lastCommitSha}" style="border:none;background:none;color:#4f46e5;font-weight:600;cursor:pointer;font-size:11px;padding:0;margin-left:4px">▾ view diff</button></p>`:''}
+          <div class="diff-panel hide" id="diff-${cssSafe(a.path)}"></div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+        <div style="display:flex;align-items:center;gap:14px;flex-shrink:0">
           <span class="tag ${a.type==='Blog Post'?'tag-blog':'tag-guide'}">${a.type}</span>
+          <span style="width:76px;text-align:center;font-size:12px;color:#64748b">${fmtDate(a.created)}</span>
+          <span style="width:76px;text-align:center;font-size:12px;color:#64748b">${fmtDate(a.modified)}</span>
           <div class="art-actions">
             <button class="btn btn-primary" style="padding:5px 12px;font-size:12px" onclick="openEditor('${a.path}')">✎ Edit</button>
             <a class="btn btn-ghost" style="padding:5px 12px;font-size:12px;text-decoration:none" href="https://www.techfordad.com/${a.path}" target="_blank">↗ Live</a>
@@ -690,7 +703,55 @@ async function loadArticles(){
           </div>
         </div>
       </div>`).join('');
-  }catch(e){document.getElementById('article-list').innerHTML='<div class="loading-text">'+e.message+'</div>';}
+
+  document.querySelectorAll('.hist-toggle').forEach(btn=>{
+    btn.addEventListener('click',()=>toggleDiff(btn.dataset.path, btn.dataset.sha, btn));
+  });
+}
+
+// fetch per-file commit history (created = first commit, modified = last commit) from GitHub
+async function loadArticleHistory(all){
+  await Promise.all(all.map(async a=>{
+    try{
+      const commits=await ghGet('/commits?path='+encodeURIComponent(a.path)+'&per_page=100');
+      if(!commits.length)return;
+      a.modified=commits[0].commit.author.date;
+      a.created=commits[commits.length-1].commit.author.date;
+      a.lastCommitSha=commits[0].sha;
+      a.lastCommitMsg=commits[0].commit.message.split('\n')[0];
+    }catch(e){/* leave dates blank on failure (e.g. rate limit) */}
+  }));
+  renderArticleTable(all);
+}
+
+// lazy-load the exact line diff for this file from its last commit
+async function toggleDiff(path,sha,btn){
+  const panel=document.getElementById('diff-'+cssSafe(path));
+  if(!panel)return;
+  if(!panel.classList.contains('hide')){panel.classList.add('hide');btn.textContent='▾ view diff';return;}
+  btn.textContent='▴ hide diff';
+  panel.classList.remove('hide');
+  if(panel.dataset.loaded)return;
+  panel.innerHTML='<div class="loading-text" style="padding:8px 0">Loading diff…</div>';
+  try{
+    const commit=await ghGet('/commits/'+sha);
+    const file=(commit.files||[]).find(f=>f.filename===path);
+    panel.innerHTML=file&&file.patch?renderPatch(file.patch):
+      '<div class="loading-text" style="padding:8px 0">No line-level diff available for this change.</div>';
+    panel.dataset.loaded='1';
+  }catch(e){panel.innerHTML='<div class="loading-text" style="padding:8px 0;color:#dc2626">Could not load diff: '+e.message+'</div>';}
+}
+
+function renderPatch(patch){
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const lines=patch.split('\n').map(l=>{
+    let color='#94a3b8';
+    if(l.startsWith('+')&&!l.startsWith('+++'))color='#4ade80';
+    else if(l.startsWith('-')&&!l.startsWith('---'))color='#f87171';
+    else if(l.startsWith('@@'))color='#60a5fa';
+    return `<span style="color:${color}">${esc(l)}</span>`;
+  });
+  return '<pre style="background:#0f172a;padding:10px 12px;border-radius:8px;font-size:11px;line-height:1.6;overflow-x:auto;margin:8px 0 4px;white-space:pre-wrap">'+lines.join('\n')+'</pre>';
 }
 
 // ── editor ──
