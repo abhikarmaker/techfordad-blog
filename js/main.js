@@ -8,13 +8,23 @@ document.querySelectorAll('.faq-q').forEach(q => {
   });
 });
 
-// Email form — Mailchimp handles validation/submission; just give visual feedback on submit
+// Email form — Mailchimp opens in a new tab (target="_blank"), so this page never
+// navigates away. Show a brief "submitting" state, then revert to a success message
+// since the real confirmation happens in the new tab.
 document.querySelectorAll('.email-form').forEach(form => {
   form.addEventListener('submit', () => {
     const btn = form.querySelector('button[type="submit"]');
     if (btn) {
+      const originalText = btn.textContent;
       btn.textContent = '✓ Submitting…';
       btn.style.background = '#16A34A';
+      setTimeout(() => {
+        btn.textContent = '✓ Check the new tab';
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.background = '';
+        }, 3000);
+      }, 1500);
     }
   });
 });
