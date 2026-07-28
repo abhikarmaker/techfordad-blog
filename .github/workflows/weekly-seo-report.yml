@@ -24,7 +24,7 @@ jobs:
       - name: Generate report
         env:
           GSC_SERVICE_ACCOUNT_KEY: ${{ secrets.GSC_SERVICE_ACCOUNT_KEY }}
-          GSC_SITE_URL: 'https://www.techfordad.com/'
+          GSC_SITE_URL: 'sc-domain:techfordad.com'
         run: python3 scripts/generate_seo_report.py > /tmp/issue_body.md
 
       - name: Ensure label exists
