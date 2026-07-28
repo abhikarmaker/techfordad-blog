@@ -137,20 +137,8 @@
 </head>
 <body>
 
-<!-- ── STEP 1: PASSWORD ── -->
-<div class="center-screen" id="step-password">
-  <div class="auth-card">
-    <div class="logo">★</div>
-    <h1>TechForDad Admin</h1>
-    <p>Enter your admin password</p>
-    <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password"/>
-    <button class="btn btn-primary" id="pw-btn" style="width:100%;justify-content:center;padding:12px">Sign In</button>
-    <p class="auth-err hide" id="pw-err">Incorrect password.</p>
-  </div>
-</div>
-
-<!-- ── STEP 2: GITHUB TOKEN SETUP ── -->
-<div class="center-screen hide" id="step-token">
+<!-- ── STEP 1: GITHUB TOKEN SETUP ── -->
+<div class="center-screen" id="step-token">
   <div class="auth-card">
     <div class="logo">⚙</div>
     <h1>Connect GitHub</h1>
@@ -338,14 +326,9 @@ const OWNER = 'abhikarmaker';
 const REPO  = 'techfordad-blog';
 const BRANCH = 'main';
 const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
-const PW_HASH = '7676aaafb027c825bd9abab78b234070e702752f625b752e55e55b48e607e358';
 const SESSION_KEY = 'tfd_v2_session';
 
 // ── utils ──
-async function sha256(s){
-  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
 const toB64=s=>btoa(unescape(encodeURIComponent(s)));
 const fromB64=s=>decodeURIComponent(escape(atob(s.replace(/\n/g,''))));
 
@@ -360,7 +343,7 @@ function getSession(){try{return JSON.parse(localStorage.getItem(SESSION_KEY)||'
 function saveSession(data){localStorage.setItem(SESSION_KEY,JSON.stringify({...getSession(),...data,expires:Date.now()+7*864e5}))}
 function getPat(){return getSession().pat||''}
 function getAnthropicKey(){return getSession().anthropicKey||''}
-function isAuthed(){const s=getSession();return s.pwok&&s.pat&&Date.now()<s.expires}
+function isAuthed(){const s=getSession();return s.pat&&Date.now()<s.expires}
 
 // ── GitHub API ──
 function ghHeaders(){return{'Authorization':'token '+getPat(),'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'}}
@@ -387,19 +370,6 @@ async function ghTrigger(workflow){
 }
 
 // ── auth flow ──
-document.getElementById('pw-btn').onclick=async()=>{
-  const pw=document.getElementById('pw-input').value;
-  const err=document.getElementById('pw-err');
-  const h=await sha256(pw);
-  if(h===PW_HASH){
-    saveSession({pwok:true});
-    err.classList.add('hide');
-    if(getPat()){initDashboard();}
-    else{document.getElementById('step-password').classList.add('hide');document.getElementById('step-token').classList.remove('hide');}
-  } else { err.classList.remove('hide'); document.getElementById('pw-input').value=''; }
-};
-document.getElementById('pw-input').onkeydown=e=>{if(e.key==='Enter')document.getElementById('pw-btn').click()};
-
 document.getElementById('pat-btn').onclick=async()=>{
   const pat=document.getElementById('pat-input').value.trim();
   const err=document.getElementById('pat-err');
@@ -432,10 +402,6 @@ document.getElementById('settings-save').onclick=()=>{
 };
 
 if(isAuthed())initDashboard();
-else if(getSession().pwok&&!getPat()){
-  document.getElementById('step-password').classList.add('hide');
-  document.getElementById('step-token').classList.remove('hide');
-}
 
 // ── tabs ──
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
@@ -455,7 +421,6 @@ document.querySelectorAll('.etab').forEach(t=>t.onclick=()=>{
 
 // ── dashboard init ──
 function initDashboard(){
-  document.getElementById('step-password').classList.add('hide');
   document.getElementById('step-token').classList.add('hide');
   document.getElementById('app').style.display='flex';
   loadOverview();
