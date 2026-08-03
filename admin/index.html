@@ -89,12 +89,25 @@
     .settings-field input{width:100%;padding:10px 12px;border:2px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:monospace;outline:none;transition:border-color .2s}
     .settings-field input:focus{border-color:#1B3A6B}
     /* ── article editor ── */
-    .article-list-item{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #f8fafc;gap:10px}
+    .article-list-item{padding:12px 18px;border-bottom:1px solid #f8fafc}
     .article-list-item:last-child{border:none}
     .article-list-item:hover{background:#fafbff}
+    .article-grid{display:grid;grid-template-columns:1fr 110px 110px 110px 232px;gap:10px;align-items:center}
+    .article-list-item.is-new{background:#f5f3ff}
+    .article-list-item.is-new:hover{background:#ede9fe}
+    .article-list-item.is-updated{background:#fffbeb}
+    .article-list-item.is-updated:hover{background:#fef3c7}
+    .badge-new,.badge-updated{display:inline-block;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+    .badge-new{background:#4f46e5;color:#fff}
+    .badge-updated{background:#f59e0b;color:#fff}
+    .col-head{cursor:pointer;user-select:none}
+    .col-head:hover{color:#4f46e5}
+    .col-head .arrow{opacity:.45;margin-left:2px}
+    .col-head.active{color:#4f46e5}
+    .col-head.active .arrow{opacity:1}
     .art-info h4{font-size:13px;font-weight:600;color:#0f172a;margin-bottom:2px}
     .art-info p{font-size:12px;color:#94a3b8}
-    .art-actions{display:flex;gap:8px;flex-shrink:0}
+    .art-actions{display:flex;gap:8px;flex-shrink:0;justify-content:flex-end}
     #editor-panel{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:24px}
     #editor-panel.open{display:flex}
     .editor-modal{background:#fff;border-radius:14px;width:100%;max-width:900px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
@@ -646,28 +659,61 @@ async function loadArticles(){
 
 function fmtDate(iso){return iso?new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'…'}
 function cssSafe(s){return s.replace(/[^a-zA-Z0-9]/g,'_')}
+function isRecent(iso){return !!iso && (Date.now()-new Date(iso).getTime())<7*864e5}
+
+let allArticles=[];
+let articleFilter={type:'all',sortKey:'created',sortDir:'desc'};
+
+function cycleTypeFilter(){
+  const order=['all','Blog Post','Guide'];
+  articleFilter.type=order[(order.indexOf(articleFilter.type)+1)%order.length];
+  renderArticleTable(allArticles);
+}
+function sortByCol(key){
+  if(articleFilter.sortKey===key){articleFilter.sortDir=articleFilter.sortDir==='desc'?'asc':'desc';}
+  else{articleFilter.sortKey=key;articleFilter.sortDir='desc';}
+  renderArticleTable(allArticles);
+}
 
 function renderArticleTable(all){
-  const header=`<div style="display:grid;grid-template-columns:1fr 90px 90px 120px auto;gap:10px;padding:10px 18px;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #f1f5f9;background:#f8fafc"><span>TITLE</span><span>TYPE</span><span>CREATED</span><span>MODIFIED</span><span>ACTIONS</span></div>`;
-  document.getElementById('article-list').innerHTML = header + all.map(a=>`
-      <div class="article-list-item">
-        <div class="art-info" style="flex:1;min-width:0">
-          <h4>${a.title}</h4>
+  allArticles=all;
+  const arrow=key=>articleFilter.sortKey===key?(articleFilter.sortDir==='desc'?'↓':'↑'):'⇅';
+  const header=`<div class="article-grid" style="padding:10px 18px;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #f1f5f9;background:#f8fafc">
+    <span>TITLE</span>
+    <span class="col-head ${articleFilter.type!=='all'?'active':''}" style="text-align:center" onclick="cycleTypeFilter()" title="Click to filter by type">TYPE${articleFilter.type!=='all'?' • '+articleFilter.type:''}</span>
+    <span class="col-head ${articleFilter.sortKey==='created'?'active':''}" style="text-align:center" onclick="sortByCol('created')" title="Click to sort">CREATED <span class="arrow">${arrow('created')}</span></span>
+    <span class="col-head ${articleFilter.sortKey==='modified'?'active':''}" style="text-align:center" onclick="sortByCol('modified')" title="Click to sort">MODIFIED <span class="arrow">${arrow('modified')}</span></span>
+    <span style="text-align:right">ACTIONS</span>
+  </div>`;
+
+  let rows=articleFilter.type==='all'?all.slice():all.filter(a=>a.type===articleFilter.type);
+  rows.sort((a,b)=>{
+    const av=a[articleFilter.sortKey]?new Date(a[articleFilter.sortKey]).getTime():0;
+    const bv=b[articleFilter.sortKey]?new Date(b[articleFilter.sortKey]).getTime():0;
+    return articleFilter.sortDir==='desc'?bv-av:av-bv;
+  });
+
+  document.getElementById('article-list').innerHTML = header + rows.map(a=>{
+    const badge=isRecent(a.created)?'<span class="badge-new">🆕 New</span>':(isRecent(a.modified)?'<span class="badge-updated">✎ Updated</span>':'');
+    const rowClass=isRecent(a.created)?'is-new':(isRecent(a.modified)?'is-updated':'');
+    return `
+      <div class="article-list-item article-grid ${rowClass}">
+        <div class="art-info" style="min-width:0">
+          <h4>${a.title}${badge}</h4>
           <p>${a.desc}</p>
           ${a.lastCommitMsg?`<p style="margin-top:4px;font-size:11px;color:#64748b">Last change: ${a.lastCommitMsg} <button class="hist-toggle" data-path="${a.path}" data-sha="${a.lastCommitSha}" style="border:none;background:none;color:#4f46e5;font-weight:600;cursor:pointer;font-size:11px;padding:0;margin-left:4px">▾ view diff</button></p>`:''}
           <div class="diff-panel hide" id="diff-${cssSafe(a.path)}"></div>
         </div>
-        <div style="display:flex;align-items:center;gap:14px;flex-shrink:0">
-          <span class="tag ${a.type==='Blog Post'?'tag-blog':'tag-guide'}">${a.type}</span>
-          <span style="width:76px;text-align:center;font-size:12px;color:#64748b">${fmtDate(a.created)}</span>
-          <span style="width:76px;text-align:center;font-size:12px;color:#64748b">${fmtDate(a.modified)}</span>
-          <div class="art-actions">
-            <button class="btn btn-primary" style="padding:5px 12px;font-size:12px" onclick="openEditor('${a.path}')">✎ Edit</button>
-            <a class="btn btn-ghost" style="padding:5px 12px;font-size:12px;text-decoration:none" href="https://www.techfordad.com/${a.path}" target="_blank">↗ Live</a>
-            <a class="btn btn-ghost" style="padding:5px 12px;font-size:12px;text-decoration:none" href="https://github.com/${OWNER}/${REPO}/blob/main/${a.path}" target="_blank">⊕ GitHub</a>
-          </div>
+        <span style="text-align:center"><span class="tag ${a.type==='Blog Post'?'tag-blog':'tag-guide'}">${a.type}</span></span>
+        <span style="text-align:center;font-size:12px;color:#64748b">${fmtDate(a.created)}</span>
+        <span style="text-align:center;font-size:12px;color:#64748b">${fmtDate(a.modified)}</span>
+        <div class="art-actions">
+          <button class="btn btn-primary" style="padding:5px 12px;font-size:12px" onclick="openEditor('${a.path}')">✎ Edit</button>
+          <a class="btn btn-ghost" style="padding:5px 12px;font-size:12px;text-decoration:none" href="https://www.techfordad.com/${a.path}" target="_blank">↗ Live</a>
+          <a class="btn btn-ghost" style="padding:5px 12px;font-size:12px;text-decoration:none" href="https://github.com/${OWNER}/${REPO}/blob/main/${a.path}" target="_blank">⊕ GitHub</a>
         </div>
-      </div>`).join('');
+      </div>`;
+  }).join('');
 
   document.querySelectorAll('.hist-toggle').forEach(btn=>{
     btn.addEventListener('click',()=>toggleDiff(btn.dataset.path, btn.dataset.sha, btn));
