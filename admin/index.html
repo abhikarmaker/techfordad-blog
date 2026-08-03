@@ -340,7 +340,7 @@ function toast(msg,isErr=false){
 
 // ── session ──
 function getSession(){try{return JSON.parse(localStorage.getItem(SESSION_KEY)||'{}')}catch{return{}}}
-function saveSession(data){localStorage.setItem(SESSION_KEY,JSON.stringify({...getSession(),...data,expires:Date.now()+7*864e5}))}
+function saveSession(data){localStorage.setItem(SESSION_KEY,JSON.stringify({...getSession(),...data,expires:Date.now()+90*864e5}))}
 function getPat(){return getSession().pat||''}
 function getAnthropicKey(){return getSession().anthropicKey||''}
 function isAuthed(){const s=getSession();return s.pat&&Date.now()<s.expires}
