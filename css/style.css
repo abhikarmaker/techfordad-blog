@@ -12,6 +12,7 @@
   --border:  #E5E7EB;
   --green:   #16A34A;
   --red:     #DC2626;
+  --amber-text: #9C6500; /* darker amber for text-on-light use — meets WCAG AA 4.5:1, unlike --amber's 2.2:1 */
   --radius:  10px;
   --shadow:  0 2px 16px rgba(27,58,107,0.08);
 }
@@ -180,7 +181,7 @@ section { padding: 64px 24px; }
 
 .section-label {
   font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.12em; color: var(--amber);
+  letter-spacing: 0.12em; color: var(--amber-text);
   display: block; margin-bottom: 6px;
 }
 
@@ -227,7 +228,7 @@ section { padding: 64px 24px; }
 
 .card-tag {
   font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.1em; color: var(--amber);
+  letter-spacing: 0.1em; color: var(--amber-text);
   margin-bottom: 8px; display: block;
 }
 
@@ -278,7 +279,7 @@ section { padding: 64px 24px; }
 .pick-card h3 { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
 .pick-card p { font-size: 0.82rem; color: var(--muted); margin-bottom: 14px; }
 
-.stars { color: var(--amber); font-size: 0.9rem; margin-bottom: 12px; }
+.stars { color: var(--amber-text); font-size: 0.9rem; margin-bottom: 12px; }
 .rating-count { color: var(--muted); font-size: 0.8rem; }
 
 .pick-price {
@@ -299,7 +300,7 @@ section { padding: 64px 24px; }
 /* ===== WHY TRUST US ===== */
 .why-us { background: var(--navy); color: var(--white); }
 .why-us .section-header h2 { color: var(--white); }
-.why-us .section-label { color: var(--amber); }
+.why-us .section-label { color: var(--amber-text); }
 
 .why-grid {
   display: grid;
@@ -383,7 +384,7 @@ footer {
   border-radius: 6px; border-left: 3px solid var(--amber);
 }
 
-.footer-col h4 {
+.footer-col h3 {
   font-size: 0.8rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.1em;
   color: var(--white); margin-bottom: 14px;
