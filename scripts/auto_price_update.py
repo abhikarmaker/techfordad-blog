@@ -58,6 +58,10 @@ def find_current_price(product_name: str, check_url: str, current_price: str) ->
 
 def patch_html(filepath: Path, old_price: str, new_price: str) -> bool:
     """Replace every occurrence of old_price with new_price in an HTML file."""
+    # TODO: this is a blind whole-file substring replace, not scoped to the
+    # specific product. If old_price is itself a substring of a different,
+    # unrelated price on the same page (e.g. "$29.95" inside "$129.95"),
+    # that unrelated price gets silently corrupted too.
     if not filepath.exists():
         return False
     content = filepath.read_text()
